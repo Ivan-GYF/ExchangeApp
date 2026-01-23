@@ -1,0 +1,243 @@
+.matching-workbench-container {
+  padding: 24px;
+}
+
+.page-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 24px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin: 0;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.card-title-wrapper {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+/* 需求卡容器 */
+.demand-card-container .ant-card-body {
+  padding: 12px;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.demand-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 单个需求卡样式 */
+.demand-card {
+  padding: 16px;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #fafafa;
+}
+
+.demand-card:hover {
+  border-color: #1890ff;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.15);
+}
+
+.demand-card.selected {
+  border-color: #1890ff;
+  background: #e6f7ff;
+  box-shadow: 0 2px 8px rgba(24, 144, 255, 0.25);
+}
+
+.demand-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 12px;
+}
+
+.demand-name {
+  font-size: 16px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.demand-info {
+  display: flex;
+  gap: 24px;
+  margin-bottom: 12px;
+}
+
+.info-item {
+  display: flex;
+  flex-direction: column;
+}
+
+.info-label {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.info-value {
+  font-size: 18px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.info-value.highlight {
+  color: #ff4d4f;
+}
+
+.demand-tags {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 8px;
+}
+
+.demand-notes {
+  font-size: 13px;
+  color: rgba(0, 0, 0, 0.65);
+  padding: 8px;
+  background: rgba(0, 0, 0, 0.02);
+  border-radius: 4px;
+  margin-top: 8px;
+}
+
+/* 资产卡容器 */
+.asset-card-container .ant-card-body {
+  padding: 12px;
+  max-height: calc(100vh - 200px);
+  overflow-y: auto;
+}
+
+.asset-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+/* 单个资产卡样式 */
+.asset-card {
+  padding: 16px;
+  border: 1px solid #f0f0f0;
+  border-radius: 8px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  background: #fff;
+}
+
+.asset-card:hover {
+  border-color: #52c41a;
+  box-shadow: 0 2px 8px rgba(82, 196, 26, 0.15);
+}
+
+.asset-card.selected {
+  border-color: #52c41a;
+  background: #f6ffed;
+  box-shadow: 0 2px 8px rgba(82, 196, 26, 0.25);
+}
+
+.asset-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.asset-tags {
+  display: flex;
+  gap: 8px;
+}
+
+.asset-title {
+  font-size: 16px;
+  font-weight: 600;
+  margin: 8px 0 12px 0;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.asset-stats {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-top: 1px solid #f0f0f0;
+  border-bottom: 1px solid #f0f0f0;
+  margin-bottom: 12px;
+}
+
+.stat-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.stat-label {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.stat-value {
+  font-size: 14px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.stat-value.highlight {
+  color: #ff4d4f;
+}
+
+.asset-progress {
+  margin-bottom: 8px;
+}
+
+/* 响应式 */
+@media (max-width: 992px) {
+  .demand-card-container,
+  .asset-card-container {
+    margin-bottom: 24px;
+  }
+  
+  .demand-card-container .ant-card-body,
+  .asset-card-container .ant-card-body {
+    max-height: 400px;
+  }
+  
+  .page-header {
+    flex-direction: column;
+    gap: 16px;
+    align-items: flex-start;
+  }
+}
+
+/* 滚动条样式 */
+.demand-card-container .ant-card-body::-webkit-scrollbar,
+.asset-card-container .ant-card-body::-webkit-scrollbar {
+  width: 6px;
+}
+
+.demand-card-container .ant-card-body::-webkit-scrollbar-thumb,
+.asset-card-container .ant-card-body::-webkit-scrollbar-thumb {
+  background: rgba(0, 0, 0, 0.15);
+  border-radius: 3px;
+}
+
+.demand-card-container .ant-card-body::-webkit-scrollbar-thumb:hover,
+.asset-card-container .ant-card-body::-webkit-scrollbar-thumb:hover {
+  background: rgba(0, 0, 0, 0.25);
+}

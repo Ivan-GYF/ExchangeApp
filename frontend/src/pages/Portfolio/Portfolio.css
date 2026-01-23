@@ -1,0 +1,55 @@
+.portfolio-container {
+  padding: 24px;
+}
+
+.page-title {
+  font-size: 24px;
+  font-weight: 600;
+  margin-bottom: 24px;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.milestones-list {
+  max-height: 300px;
+  overflow-y: auto;
+}
+
+.milestone-item {
+  display: flex;
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.milestone-item:last-child {
+  border-bottom: none;
+}
+
+.milestone-date {
+  flex-shrink: 0;
+  width: 100px;
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.45);
+  padding-right: 16px;
+}
+
+.milestone-content {
+  flex: 1;
+}
+
+.milestone-title {
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.85);
+  margin-bottom: 4px;
+}
+
+.milestone-asset {
+  font-size: 12px;
+  color: rgba(0, 0, 0, 0.65);
+}

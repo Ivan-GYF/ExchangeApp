@@ -1,0 +1,208 @@
+// This is your Prisma schema file
+// SQLite version for local development
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+// 用户模型
+model User {
+  id            String   @id @default(uuid())
+  email         String   @unique
+  passwordHash  String
+  name          String
+  phone         String?
+  role          String   @default("INVESTOR") // INVESTOR, ASSET_MANAGER, ADMIN
+
+  // 关联关系
+  investorProfile InvestorProfile?
+  investments   Investment[]
+  activities    Activity[]
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@map("users")
+}
+
+// 投资者画像
+model InvestorProfile {
+  id                String   @id @default(uuid())
+  userId            String   @unique
+  user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  // 投资偏好 (存储为字符串，应用层解析)
+  investmentRangeMin   Float
+  investmentRangeMax   Float
+  riskTolerance        String   @default("BALANCED") // CONSERVATIVE, BALANCED, AGGRESSIVE
+  preferredTypes       String   // 逗号分隔: "RACING_TRACK,CAMPUS_FACILITY"
+  preferredRegions     String   // 逗号分隔: "北京,上海"
+  returnExpectationMin Float
+  returnExpectationMax Float
+
+  // AI匹配设置
+  aiMatchingEnabled Boolean  @default(true)
+
+  createdAt         DateTime @default(now())
+  updatedAt         DateTime @updatedAt
+
+  @@map("investor_profiles")
+}
+
+// 资产模型
+model Asset {
+  id                String      @id @default(uuid())
+  title             String
+  description       String
+  type              String      // RACING_TRACK, DOUYIN_STREAMING, CAMPUS_FACILITY, CONCERT_TICKET
+
+  // 财务信息
+  targetAmount      Float
+  raisedAmount      Float       @default(0)
+  minInvestment     Float
+  maxInvestment     Float
+
+  // 收益信息 (存储为字符串，应用层解析)
+  expectedReturnMin Float
+  expectedReturnMax Float
+  expectedReturnType String    @default("annual")
+  revenueStructure  String      // JSON字符串
+
+  // 风险评估
+  riskLevel         String      // LOW, MEDIUM, HIGH
+  riskScore         Float
+
+  // 地理位置
+  region            String
+  city              String?
+
+  // 状态管理
+  status            String      @default("PENDING") // PENDING, UNDER_REVIEW, APPROVED, LISTED, FUNDING, FUNDED, ACTIVE, COMPLETED, REJECTED
+
+  // 时间线
+  fundingDeadline   DateTime?
+  investmentPeriod  Int?        // 投资期限（月）
+
+  // 尽调信息 (JSON字符串)
+  dueDiligence      String?
+
+  // 关联关系
+  investments       Investment[]
+  milestones        Milestone[]
+  documents         Document[]
+
+  createdAt         DateTime    @default(now())
+  updatedAt         DateTime    @updatedAt
+
+  @@map("assets")
+}
+
+// 投资记录
+model Investment {
+  id              String          @id @default(uuid())
+
+  // 关联
+  userId          String
+  user            User            @relation(fields: [userId], references: [id])
+  assetId         String
+  asset           Asset           @relation(fields: [assetId], references: [id])
+
+  // 投资金额
+  amount          Float
+  managementFee   Float
+  transactionFee  Float
+  netAmount       Float
+
+  // 当前价值
+  currentValue    Float
+  returnRate      Float           // 回报率百分比
+
+  // 状态
+  status          String          @default("PENDING") // PENDING, CONFIRMED, ACTIVE, DISTRIBUTING, COMPLETED, CANCELLED
+
+  // P-Note信息
+  pNoteNumber     String?         @unique
+
+  // 分红记录
+  dividends       Dividend[]
+
+  createdAt       DateTime        @default(now())
+  updatedAt       DateTime        @updatedAt
+
+  @@map("investments")
+}
+
+// 分红记录
+model Dividend {
+  id              String      @id @default(uuid())
+
+  investmentId    String
+  investment      Investment  @relation(fields: [investmentId], references: [id])
+
+  amount          Float
+  type            String      // QUARTERLY, CAMPAIGN, EVENT
+  period          String      // Q1, Q2, Q3, Q4 或具体日期
+
+  status          String      @default("PENDING") // PENDING, PAID, FAILED
+  paidAt          DateTime?
+
+  createdAt       DateTime    @default(now())
+
+  @@map("dividends")
+}
+
+// 里程碑
+model Milestone {
+  id          String    @id @default(uuid())
+
+  assetId     String
+  asset       Asset     @relation(fields: [assetId], references: [id])
+
+  title       String
+  description String?
+  dueDate     DateTime
+  status      String    @default("PENDING") // PENDING, COMPLETED, OVERDUE
+
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+
+  @@map("milestones")
+}
+
+// 文档
+model Document {
+  id          String    @id @default(uuid())
+
+  assetId     String
+  asset       Asset     @relation(fields: [assetId], references: [id])
+
+  title       String
+  type        String    // CONTRACT, AUDIT_REPORT, DUE_DILIGENCE, FINANCIAL, OTHER
+  fileUrl     String
+  fileSize    Int
+
+  createdAt   DateTime  @default(now())
+
+  @@map("documents")
+}
+
+// 活动日志
+model Activity {
+  id          String        @id @default(uuid())
+
+  userId      String?
+  user        User?         @relation(fields: [userId], references: [id])
+
+  type        String        // ASSET_SUBMITTED, ASSET_APPROVED, ASSET_REJECTED, INVESTMENT_MADE, DIVIDEND_PAID, MILESTONE_REACHED, SYSTEM_EVENT
+  description String
+  metadata    String?       // JSON字符串
+
+  createdAt   DateTime      @default(now())
+
+  @@map("activities")
+}

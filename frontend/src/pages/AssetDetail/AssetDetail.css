@@ -1,0 +1,103 @@
+.asset-detail-container {
+  padding: 24px;
+}
+
+.loading-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 400px;
+}
+
+.asset-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+}
+
+.asset-title {
+  font-size: 28px;
+  font-weight: 600;
+  margin: 16px 0;
+  color: rgba(0, 0, 0, 0.85);
+  line-height: 1.4;
+}
+
+.revenue-structure {
+  margin-top: 16px;
+}
+
+.revenue-item {
+  margin-bottom: 16px;
+}
+
+.revenue-label {
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.65);
+  margin-bottom: 8px;
+}
+
+.investment-card {
+  position: sticky;
+  top: 24px;
+}
+
+.investment-card h3 {
+  font-size: 18px;
+  font-weight: 600;
+  margin-bottom: 16px;
+}
+
+.funding-progress {
+  margin: 16px 0;
+}
+
+.progress-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: baseline;
+  margin-bottom: 12px;
+}
+
+.raised-amount {
+  font-size: 24px;
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.85);
+}
+
+.progress-percent {
+  font-size: 16px;
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.progress-footer {
+  display: flex;
+  justify-content: space-between;
+  margin-top: 8px;
+  font-size: 14px;
+  color: rgba(0, 0, 0, 0.45);
+}
+
+.investment-info {
+  margin: 16px 0;
+}
+
+.info-item {
+  display: flex;
+  justify-content: space-between;
+  padding: 12px 0;
+  border-bottom: 1px solid #f0f0f0;
+}
+
+.info-item:last-child {
+  border-bottom: none;
+}
+
+.info-label {
+  color: rgba(0, 0, 0, 0.65);
+}
+
+.info-value {
+  font-weight: 600;
+  color: rgba(0, 0, 0, 0.85);
+}
