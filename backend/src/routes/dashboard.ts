@@ -1,9 +1,9 @@
 import { Router } from 'express'
-import { dashboardStats, trendData, seedAssets, recentActivities } from '../data/seed-data'
+import { dashboardStats, trendData, allAssets, recentActivities } from '../data/seed-data'
 
 const router = Router()
 
-// 获取仪表板 KPI 数据（根路径和/kpi都支持）
+// ????? KPI ??????? kpi ????
 router.get('/', (req, res) => {
   res.json({
     success: true,
@@ -18,7 +18,7 @@ router.get('/kpi', (req, res) => {
   })
 })
 
-// 获取趋势数据
+// ??????
 router.get('/trends', (req, res) => {
   res.json({
     success: true,
@@ -26,10 +26,10 @@ router.get('/trends', (req, res) => {
   })
 })
 
-// 获取热门项目
+// ??????
 router.get('/featured', (req, res) => {
-  // 返回融资进度最高的4个项目
-  const featured = [...seedAssets]
+  // ?????????4???
+  const featured = [...allAssets]
     .sort((a, b) => (b.raisedAmount / b.targetAmount) - (a.raisedAmount / a.targetAmount))
     .slice(0, 4)
   
@@ -39,7 +39,7 @@ router.get('/featured', (req, res) => {
   })
 })
 
-// 获取最近活动
+// ??????
 router.get('/activities', (req, res) => {
   res.json({
     success: true,

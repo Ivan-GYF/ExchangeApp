@@ -11,6 +11,7 @@ const AssetDetail = lazy(() => import('./pages/AssetDetail'))
 const Portfolio = lazy(() => import('./pages/Portfolio'))
 const MatchingWorkbench = lazy(() => import('./pages/MatchingWorkbench'))
 const CentralKitchen = lazy(() => import('./pages/CentralKitchen'))
+const MyProjects = lazy(() => import('./pages/MyProjects'))
 const Login = lazy(() => import('./pages/Login'))
 const Register = lazy(() => import('./pages/Register'))
 
@@ -59,6 +60,7 @@ function App() {
           <Route path="assets/:id" element={<AssetDetail />} />
           <Route path="portfolio" element={<Portfolio />} />
           <Route path="matching" element={<MatchingWorkbench />} />
+          <Route path="projects" element={<MyProjects />} />
           <Route path="central-kitchen" element={<CentralKitchen />} />
         </Route>
 

@@ -20,12 +20,12 @@ app.use(express.json())
 app.use(express.urlencoded({ extended: true }))
 
 // 健康检查
-app.get('/health', (req, res) => {
+app.get('/health', (_req, res) => {
   res.json({ status: 'ok', timestamp: new Date().toISOString() })
 })
 
 // API路由
-app.get('/api', (req, res) => {
+app.get('/api', (_req, res) => {
   res.json({
     message: 'Marketplace Exchange Platform API',
     version: '1.0.0',
@@ -47,6 +47,7 @@ import dashboardRoutes from './routes/dashboard'
 import investmentRoutes from './routes/investments'
 import matchingRoutes from './routes/matching'
 import centralKitchenRoutes from './routes/central-kitchen'
+import projectRoutes from './routes/projects'
 
 // 使用路由
 app.use('/api/auth', authRoutes)
@@ -55,9 +56,10 @@ app.use('/api/dashboard', dashboardRoutes)
 app.use('/api/investments', investmentRoutes)
 app.use('/api/matching', matchingRoutes)
 app.use('/api/central-kitchen', centralKitchenRoutes)
+app.use('/api/projects', projectRoutes)
 
 // 404处理
-app.use((req, res) => {
+app.use((_req, res) => {
   res.status(404).json({
     success: false,
     error: {
@@ -68,7 +70,7 @@ app.use((req, res) => {
 })
 
 // 错误处理中间件
-app.use((err: any, req: express.Request, res: express.Response, next: express.NextFunction) => {
+app.use((err: any, _req: express.Request, res: express.Response, _next: express.NextFunction) => {
   console.error('Error:', err)
 
   res.status(err.status || 500).json({

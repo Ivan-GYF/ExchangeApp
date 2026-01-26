@@ -1,7 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Row, Col, Card, Statistic, Table, Tag, Button, Modal, Form, Input, Select, message, Tabs, Timeline, Progress, Space } from 'antd'
-import { CheckCircleOutlined, CloseCircleOutlined, SyncOutlined, PlusOutlined, ExclamationCircleOutlined } from '@ant-design/icons'
-import { useNavigate } from 'react-router-dom'
+import { CheckCircleOutlined, CloseCircleOutlined, SyncOutlined, PlusOutlined, RollbackOutlined, DownOutlined } from '@ant-design/icons'
 import { apiClient } from '@/services/api'
 import { Asset } from '@/types'
 import ReactECharts from 'echarts-for-react'
@@ -12,10 +11,9 @@ const { Option } = Select
 const { TabPane } = Tabs
 
 const assetTypeLabels: Record<string, { label: string; color: string; icon: string }> = {
-  RACING_TRACK: { label: '轻资产赛道', color: '#91d5ff', icon: '🏁' },
-  DOUYIN_STREAMING: { label: '抖音投流', color: '#95de64', icon: '📱' },
-  CAMPUS_FACILITY: { label: '天猫校园', color: '#ffd591', icon: '🏫' },
-  CONCERT_TICKET: { label: '演唱会门票', color: '#ffa39e', icon: '🎤' },
+  MIFC_FUND_LP: { label: 'MIFC主基金LP', color: '#597ef7', icon: '💎' },
+  MIFC_ABS: { label: 'MIFC ABS', color: '#13c2c2', icon: '🛡️' },
+  CO_INVESTMENT: { label: '跟投项目', color: '#ff7a45', icon: '🤝' },
 }
 
 const statusLabels: Record<string, { label: string; color: string }> = {
@@ -54,11 +52,33 @@ interface Activity {
   }
 }
 
+interface ProjectSubmission {
+  id: string
+  ownerId: string
+  ownerName: string
+  title: string
+  description: string
+  type: string
+  targetAmount: number
+  expectedReturn: {
+    min: number
+    max: number
+    type: string
+  }
+  riskLevel: 'LOW' | 'MEDIUM' | 'HIGH'
+  status: string
+  submittedAt?: string
+  reviewedAt?: string
+  reviewNotes?: string
+  createdAt: string
+  updatedAt: string
+}
+
 const CentralKitchen = () => {
-  const navigate = useNavigate()
   const [form] = Form.useForm()
   const [overview, setOverview] = useState<OverviewData | null>(null)
   const [pendingAssets, setPendingAssets] = useState<Asset[]>([])
+  const [pendingProjects, setPendingProjects] = useState<ProjectSubmission[]>([])
   const [activities, setActivities] = useState<Activity[]>([])
   const [loading, setLoading] = useState(true)
   const [approvalModalVisible, setApprovalModalVisible] = useState(false)
@@ -66,6 +86,9 @@ const CentralKitchen = () => {
   const [approvalAction, setApprovalAction] = useState<'APPROVE' | 'REJECT' | 'REQUEST_REVIEW'>('APPROVE')
   const [createModalVisible, setCreateModalVisible] = useState(false)
   const [createForm] = Form.useForm()
+  const [projectReviewModalVisible, setProjectReviewModalVisible] = useState(false)
+  const [selectedProject, setSelectedProject] = useState<ProjectSubmission | null>(null)
+  const [projectReviewForm] = Form.useForm()
 
   useEffect(() => {
     fetchData()
@@ -77,6 +100,7 @@ const CentralKitchen = () => {
       await Promise.all([
         fetchOverview(),
         fetchPendingAssets(),
+        fetchPendingProjects(),
         fetchActivities(),
       ])
     } catch (error) {
@@ -97,10 +121,13 @@ const CentralKitchen = () => {
 
   const fetchPendingAssets = async () => {
     try {
-      const data = await apiClient.get<{ assets: Asset[] }>('/central-kitchen/pending')
-      setPendingAssets(data.assets)
+      // 改为从 /api/assets 获取已上架的资产（包括批准后自动上架的项目）
+      const data = await apiClient.get<{ assets: Asset[] }>('/assets', {
+        params: { status: 'FUNDING' } // 获取募资中的项目（即已上架的项目）
+      })
+      setPendingAssets(data.assets || [])
     } catch (error) {
-      console.error('Failed to fetch pending assets:', error)
+      console.error('Failed to fetch listed assets:', error)
     }
   }
 
@@ -113,6 +140,84 @@ const CentralKitchen = () => {
     } catch (error) {
       console.error('Failed to fetch activities:', error)
     }
+  }
+
+  const fetchPendingProjects = async () => {
+    try {
+      const data = await apiClient.get<{ projects: ProjectSubmission[]; total: number }>('/projects/admin/pending')
+      setPendingProjects(data.projects || [])
+    } catch (error) {
+      console.error('Failed to fetch pending projects:', error)
+    }
+  }
+
+  const handleProjectReviewClick = (project: ProjectSubmission, action: 'APPROVE' | 'REJECT') => {
+    setSelectedProject(project)
+    setApprovalAction(action)
+    setProjectReviewModalVisible(true)
+  }
+
+  const handleProjectReviewSubmit = async (values: any) => {
+    if (!selectedProject) return
+
+    try {
+      await apiClient.post(`/projects/${selectedProject.id}/review`, {
+        action: approvalAction,
+        notes: values.notes,
+      })
+
+      message.success(
+        approvalAction === 'APPROVE' 
+          ? '项目已批准并自动上架到市场浏览器！投资人现在可以看到这个项目了。' 
+          : '项目已拒绝'
+      )
+
+      setProjectReviewModalVisible(false)
+      projectReviewForm.resetFields()
+      fetchData()
+    } catch (error: any) {
+      message.error(error.response?.data?.error || '操作失败')
+    }
+  }
+
+  const handleRevokeReview = async (project: ProjectSubmission) => {
+    Modal.confirm({
+      title: '撤销审核',
+      content: `确认撤销项目"${project.title}"的审核决定吗？项目状态将恢复为"待审核"。`,
+      okText: '确认撤销',
+      cancelText: '取消',
+      okButtonProps: { danger: true },
+      onOk: async () => {
+        try {
+          await apiClient.post(`/projects/${project.id}/revoke`)
+          message.success('审核已撤销，项目状态已恢复为待审核')
+          fetchData()
+        } catch (error: any) {
+          message.error(error.response?.data?.error || '撤销失败')
+        }
+      },
+    })
+  }
+
+  const handleUnlistAsset = async (asset: Asset) => {
+    Modal.confirm({
+      title: '下架项目',
+      content: `确认将项目"${asset.title}"从市场下架吗？下架后项目将回到"项目提交"栏，状态恢复为"待审核"。`,
+      okText: '确认下架',
+      cancelText: '取消',
+      okButtonProps: { danger: true },
+      onOk: async () => {
+        try {
+          // 调用后端下架接口（需要从 asset.id 提取项目ID）
+          // asset.id 格式通常是 'asset-{projectId}'，需要映射回项目
+          await apiClient.post(`/assets/${asset.id}/unlist`)
+          message.success('项目已下架，已恢复为待审核状态')
+          fetchData()
+        } catch (error: any) {
+          message.error(error.response?.data?.error || '下架失败')
+        }
+      },
+    })
   }
 
   const handleApprovalClick = (asset: Asset, action: 'APPROVE' | 'REJECT' | 'REQUEST_REVIEW') => {
@@ -307,28 +412,146 @@ const CentralKitchen = () => {
       render: (_: any, record: Asset) => (
         <Space>
           <Button
-            type="primary"
-            size="small"
-            icon={<CheckCircleOutlined />}
-            onClick={() => handleApprovalClick(record, 'APPROVE')}
-          >
-            批准
-          </Button>
-          <Button
-            size="small"
-            icon={<SyncOutlined />}
-            onClick={() => handleApprovalClick(record, 'REQUEST_REVIEW')}
-          >
-            审核
-          </Button>
-          <Button
             danger
             size="small"
-            icon={<CloseCircleOutlined />}
-            onClick={() => handleApprovalClick(record, 'REJECT')}
+            icon={<DownOutlined />}
+            onClick={() => handleUnlistAsset(record)}
           >
-            拒绝
+            下架
           </Button>
+        </Space>
+      ),
+    },
+  ]
+
+  const projectColumns = [
+    {
+      title: '项目名称',
+      dataIndex: 'title',
+      key: 'title',
+      width: 300,
+      ellipsis: true,
+    },
+    {
+      title: '提交方',
+      dataIndex: 'ownerName',
+      key: 'ownerName',
+      width: 180,
+    },
+    {
+      title: '类型',
+      dataIndex: 'type',
+      key: 'type',
+      width: 120,
+      render: (type: string) => {
+        const labels: Record<string, string> = {
+          CO_INVESTMENT: '跟投项目',
+          MIFC_FUND_LP: 'MIFC主基金LP',
+          MIFC_ABS: 'MIFC ABS',
+        }
+        return <Tag color="blue">{labels[type] || type}</Tag>
+      },
+    },
+    {
+      title: '目标金额',
+      dataIndex: 'targetAmount',
+      key: 'targetAmount',
+      width: 120,
+      render: (amount: number) => `¥${(amount / 10000).toFixed(0)}万`,
+    },
+    {
+      title: '预期收益',
+      key: 'expectedReturn',
+      width: 120,
+      render: (_: any, record: ProjectSubmission) => 
+        `${record.expectedReturn.min}-${record.expectedReturn.max}%`,
+    },
+    {
+      title: '风险等级',
+      dataIndex: 'riskLevel',
+      key: 'riskLevel',
+      width: 100,
+      render: (level: string) => {
+        const colors: Record<string, string> = {
+          LOW: 'success',
+          MEDIUM: 'warning',
+          HIGH: 'error',
+        }
+        const labels: Record<string, string> = {
+          LOW: '低风险',
+          MEDIUM: '中风险',
+          HIGH: '高风险',
+        }
+        return <Tag color={colors[level]}>{labels[level]}</Tag>
+      },
+    },
+    {
+      title: '状态',
+      dataIndex: 'status',
+      key: 'status',
+      width: 100,
+      render: (status: string) => {
+        const colors: Record<string, string> = {
+          PENDING: 'processing',
+          UNDER_REVIEW: 'processing',
+          APPROVED: 'success',
+          REJECTED: 'error',
+        }
+        const labels: Record<string, string> = {
+          PENDING: '待审核',
+          UNDER_REVIEW: '审核中',
+          APPROVED: '已批准',
+          REJECTED: '已拒绝',
+        }
+        return <Tag color={colors[status]}>{labels[status]}</Tag>
+      },
+    },
+    {
+      title: '提交时间',
+      dataIndex: 'submittedAt',
+      key: 'submittedAt',
+      width: 150,
+      render: (date: string) => date ? new Date(date).toLocaleString('zh-CN') : '-',
+    },
+    {
+      title: '操作',
+      key: 'actions',
+      width: 250,
+      fixed: 'right' as const,
+      render: (_: any, record: ProjectSubmission) => (
+        <Space>
+          {/* 批准和拒绝按钮 - 仅待审核时显示 */}
+          {(record.status === 'PENDING' || record.status === 'UNDER_REVIEW') && (
+            <>
+              <Button
+                type="primary"
+                size="small"
+                icon={<CheckCircleOutlined />}
+                onClick={() => handleProjectReviewClick(record, 'APPROVE')}
+              >
+                批准
+              </Button>
+              <Button
+                danger
+                size="small"
+                icon={<CloseCircleOutlined />}
+                onClick={() => handleProjectReviewClick(record, 'REJECT')}
+              >
+                拒绝
+              </Button>
+            </>
+          )}
+          
+          {/* 撤销按钮 - 仅已批准或已拒绝时显示 */}
+          {(record.status === 'APPROVED' || record.status === 'REJECTED') && (
+            <Button
+              size="small"
+              icon={<RollbackOutlined />}
+              onClick={() => handleRevokeReview(record)}
+            >
+              撤销审核
+            </Button>
+          )}
         </Space>
       ),
     },
@@ -347,8 +570,16 @@ const CentralKitchen = () => {
         </Button>
       </div>
 
-      {/* 总览指标 */}
-      <Row gutter={16} style={{ marginBottom: 24 }}>
+      {loading ? (
+        <div style={{ textAlign: 'center', padding: '100px 0' }}>
+          <Space direction="vertical" size="large">
+            <div>加载中...</div>
+          </Space>
+        </div>
+      ) : (
+        <>
+          {/* 总览指标 */}
+          <Row gutter={16} style={{ marginBottom: 24 }}>
         <Col xs={24} sm={12} lg={6}>
           <Card>
             <Statistic
@@ -395,22 +626,39 @@ const CentralKitchen = () => {
       </Row>
 
       {/* 图表 */}
-      <Row gutter={16} style={{ marginBottom: 24 }}>
-        <Col xs={24} lg={12}>
-          <Card title="资产管道状态">
-            <ReactECharts option={getPipelineChartOption()} style={{ height: 300 }} />
-          </Card>
-        </Col>
-        <Col xs={24} lg={12}>
-          <Card title="资产类型分布">
-            <ReactECharts option={getDistributionChartOption()} style={{ height: 300 }} />
-          </Card>
-        </Col>
-      </Row>
+      {!loading && overview && (
+        <Row gutter={16} style={{ marginBottom: 24 }}>
+          <Col xs={24} lg={12}>
+            <Card title="资产管道状态">
+              <ReactECharts option={getPipelineChartOption()} style={{ height: 300 }} />
+            </Card>
+          </Col>
+          <Col xs={24} lg={12}>
+            <Card title="资产类型分布">
+              <ReactECharts option={getDistributionChartOption()} style={{ height: 300 }} />
+            </Card>
+          </Col>
+        </Row>
+      )}
 
       {/* 主要内容 */}
-      <Tabs defaultActiveKey="pending">
-        <TabPane tab={`待审批资产 (${pendingAssets.length})`} key="pending">
+      <Tabs defaultActiveKey="projects">
+        {/* 项目提交 Tab - 改为第一个 */}
+        <TabPane tab={`项目提交 (${pendingProjects.length})`} key="projects">
+          <Card>
+            <Table
+              columns={projectColumns}
+              dataSource={pendingProjects}
+              rowKey="id"
+              loading={loading}
+              pagination={{ pageSize: 10 }}
+              scroll={{ x: 1400 }}
+            />
+          </Card>
+        </TabPane>
+
+        {/* 已上架项目 Tab - 原"待审批资产" */}
+        <TabPane tab={`已上架项目 (${pendingAssets.length})`} key="listed">
           <Card>
             <Table
               columns={columns}
@@ -425,26 +673,32 @@ const CentralKitchen = () => {
         <TabPane tab="实时活动" key="activities">
           <Card>
             <Timeline mode="left">
-              {activities.map((activity) => (
-                <Timeline.Item
-                  key={activity.id}
-                  color={
-                    activity.type.includes('APPROVED') ? 'green' :
-                    activity.type.includes('REJECTED') ? 'red' :
-                    'blue'
-                  }
-                >
-                  <div className="activity-item">
-                    <div className="activity-header">
-                      <span className="activity-user">{activity.user.name}</span>
-                      <span className="activity-time">
-                        {new Date(activity.createdAt).toLocaleString('zh-CN')}
-                      </span>
+              {activities && activities.length > 0 ? (
+                activities.map((activity) => (
+                  <Timeline.Item
+                    key={activity.id}
+                    color={
+                      activity.type.includes('APPROVED') ? 'green' :
+                      activity.type.includes('REJECTED') ? 'red' :
+                      'blue'
+                    }
+                  >
+                    <div className="activity-item">
+                      <div className="activity-header">
+                        <span className="activity-user">{activity.user.name}</span>
+                        <span className="activity-time">
+                          {new Date(activity.createdAt).toLocaleString('zh-CN')}
+                        </span>
+                      </div>
+                      <div className="activity-description">{activity.description}</div>
                     </div>
-                    <div className="activity-description">{activity.description}</div>
-                  </div>
+                  </Timeline.Item>
+                ))
+              ) : (
+                <Timeline.Item color="gray">
+                  <div>暂无活动记录</div>
                 </Timeline.Item>
-              ))}
+              )}
             </Timeline>
           </Card>
         </TabPane>
@@ -654,6 +908,50 @@ const CentralKitchen = () => {
           </Form.Item>
         </Form>
       </Modal>
+
+      {/* 项目审核Modal */}
+      <Modal
+        title={approvalAction === 'APPROVE' ? '批准项目' : '拒绝项目'}
+        open={projectReviewModalVisible}
+        onCancel={() => {
+          setProjectReviewModalVisible(false)
+          projectReviewForm.resetFields()
+        }}
+        onOk={() => projectReviewForm.submit()}
+        width={600}
+      >
+        {selectedProject && (
+          <div>
+            <p><strong>项目名称：</strong>{selectedProject.title}</p>
+            <p><strong>提交方：</strong>{selectedProject.ownerName}</p>
+            <p><strong>目标金额：</strong>¥{(selectedProject.targetAmount / 10000).toFixed(0)}万</p>
+            <p><strong>预期收益：</strong>{selectedProject.expectedReturn.min}-{selectedProject.expectedReturn.max}%</p>
+            
+            <Form
+              form={projectReviewForm}
+              layout="vertical"
+              onFinish={handleProjectReviewSubmit}
+            >
+              <Form.Item
+                label={approvalAction === 'APPROVE' ? '批准意见' : '拒绝原因'}
+                name="notes"
+                rules={[{ required: approvalAction === 'REJECT', message: '请输入备注' }]}
+              >
+                <TextArea
+                  rows={4}
+                  placeholder={
+                    approvalAction === 'APPROVE' 
+                      ? '项目符合上架要求，可以批准...' 
+                      : '请说明拒绝原因...'
+                  }
+                />
+              </Form.Item>
+            </Form>
+          </div>
+        )}
+      </Modal>
+        </>
+      )}
     </div>
   )
 }

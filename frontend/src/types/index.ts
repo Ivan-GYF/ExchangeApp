@@ -1,9 +1,9 @@
 // ==================== 枚举类型 ====================
 
 export enum UserRole {
-  INVESTOR = 'INVESTOR',
-  ASSET_MANAGER = 'ASSET_MANAGER',
-  ADMIN = 'ADMIN',
+  INVESTOR = 'INVESTOR',           // 投资人
+  PROJECT_OWNER = 'PROJECT_OWNER', // 项目方
+  ADMIN = 'ADMIN',                 // 交易所管理员
 }
 
 export enum RiskTolerance {
@@ -13,8 +13,15 @@ export enum RiskTolerance {
 }
 
 export enum AssetType {
+  MIFC_FUND_LP = 'MIFC_FUND_LP',      // MIFC主基金LP份额（劣后级）
+  MIFC_ABS = 'MIFC_ABS',              // MIFC主基金ABS份额（优先级）
+  CO_INVESTMENT = 'CO_INVESTMENT',    // 跟投项目
+}
+
+// 跟投项目原始类别（用于标签展示）
+export enum CoInvestmentCategory {
   RACING_TRACK = 'RACING_TRACK',
-  DOUYIN_STREAMING = 'DOUYIN_STREAMING',
+  STREAMING = 'STREAMING',
   CAMPUS_FACILITY = 'CAMPUS_FACILITY',
   CONCERT_TICKET = 'CONCERT_TICKET',
 }
@@ -118,7 +125,7 @@ export interface Asset {
   id: string
   title: string
   description: string
-  type: AssetType
+  type: AssetType | string
   targetAmount: number
   raisedAmount: number
   minInvestment: number
@@ -128,12 +135,16 @@ export interface Asset {
     max: number
     type: string
   }
+  // 兼容后端 API 返回的扁平化字段
+  expectedReturnMin?: number
+  expectedReturnMax?: number
+  expectedReturnType?: string
   revenueStructure: Record<string, number>
-  riskLevel: RiskLevel
+  riskLevel: RiskLevel | string
   riskScore: number
   region: string
   city?: string
-  status: AssetStatus
+  status: AssetStatus | string
   fundingDeadline?: string
   investmentPeriod?: number
   dueDiligence?: Record<string, boolean>
@@ -141,6 +152,24 @@ export interface Asset {
   documents?: Document[]
   createdAt: string
   updatedAt: string
+  
+  // 主基金专属字段
+  fundStructure?: {
+    totalScale: number           // 总规模（5亿）
+    priority: 'SENIOR' | 'JUNIOR' // 优先级/劣后级
+    seniorScale?: number         // 优先级规模
+    juniorScale?: number         // 劣后级规模
+  }
+  
+  // 跟投项目专属字段
+  overflowFrom?: {
+    fundId: string                 // 来源主基金ID
+    fundName: string               // 来源主基金名称
+    projectInvestLimit: number     // 主基金单项目限额
+    projectTotalNeed: number       // 项目总需求
+    overflowAmount: number         // 溢出金额
+  }
+  originalCategory?: CoInvestmentCategory | string  // 跟投项目原类别
 }
 
 export interface Investment {

@@ -454,7 +454,7 @@ export const recentActivities = [
   {
     id: 'act-001',
     type: 'INVESTMENT_MADE',
-    description: '水珠资本投资了"MIFC主基金LP份额 2024-Q1期" ¥20,000,000',
+    description: '鼎盛资本投资了"MIFC主基金LP份额 2024-Q1期" ¥20,000,000',
     createdAt: '2026-01-25T06:30:00.000Z',
   },
   {
@@ -487,7 +487,7 @@ export const recentActivities = [
 export const seedInvestments = [
   {
     id: 'inv-demo-001',
-    userId: 'investor-inst-001', // 水珠资本
+    userId: 'investor-inst-001', // 鼎盛资本
     assetId: 'mifc-fund-lp-001',
     amount: 20000000,  // 2000万投主基金LP
     managementFee: 400000,
@@ -502,7 +502,7 @@ export const seedInvestments = [
   },
   {
     id: 'inv-demo-002',
-    userId: 'investor-inst-002', // 水流资产管理
+    userId: 'investor-inst-002', // 海通证券
     assetId: 'mifc-abs-001',
     amount: 15000000,  // 1500万投ABS
     managementFee: 300000,
@@ -517,7 +517,7 @@ export const seedInvestments = [
   },
   {
     id: 'inv-demo-003',
-    userId: 'investor-inst-003', // 水滴信托
+    userId: 'investor-inst-003', // 平安信托
     assetId: 'asset-005',  // 美妆KOL（已完成）
     amount: 2000000,
     managementFee: 40000,

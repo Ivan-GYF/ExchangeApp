@@ -1,8 +1,17 @@
 import { useState } from 'react'
 import { useNavigate } from 'react-router-dom'
-import { Form, Input, Button, Card, message, Tabs } from 'antd'
-import { UserOutlined, LockOutlined, MailOutlined, PhoneOutlined } from '@ant-design/icons'
+import { Form, Input, Button, Card, message, Tabs, Space, Divider } from 'antd'
+import {
+  UserOutlined,
+  LockOutlined,
+  MailOutlined,
+  PhoneOutlined,
+  BankOutlined,
+  ProjectOutlined,
+  CrownOutlined,
+} from '@ant-design/icons'
 import { useAuthStore } from '@/stores/authStore'
+import { UserRole } from '@/types'
 import './Login.css'
 
 const Login = () => {
@@ -11,10 +20,15 @@ const Login = () => {
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('login')
 
-  // 开发模式：跳过登录
-  const handleDevLogin = () => {
-    devLogin()
-    message.success('开发模式：已以管理员身份登录')
+  // 开发模式：快速登录（三种角色）
+  const handleQuickLogin = (role: UserRole) => {
+    devLogin(role)
+    const roleNames = {
+      [UserRole.INVESTOR]: '投资人（水珠资本）',
+      [UserRole.PROJECT_OWNER]: '项目方（华娱传媒）',
+      [UserRole.ADMIN]: '交易所管理员',
+    }
+    message.success(`开发模式：已以 ${roleNames[role]} 身份登录`)
     navigate('/')
   }
 
@@ -195,16 +209,48 @@ const Login = () => {
           ]}
         />
 
-        {/* 开发模式按钮 */}
-        <div style={{ marginTop: 24, textAlign: 'center' }}>
+        {/* 开发模式快速登录 */}
+        <Divider style={{ margin: '24px 0' }}>开发模式快速登录</Divider>
+        <Space direction="vertical" size="middle" style={{ width: '100%' }}>
           <Button
-            type="dashed"
-            onClick={handleDevLogin}
-            style={{ color: '#faad14', borderColor: '#faad14' }}
+            block
+            size="large"
+            icon={<BankOutlined />}
+            onClick={() => handleQuickLogin(UserRole.INVESTOR)}
+            style={{
+              borderColor: '#1890ff',
+              color: '#1890ff',
+            }}
           >
-            🚀 开发模式（跳过登录）
+            投资人登录（水珠资本）
           </Button>
-        </div>
+          
+          <Button
+            block
+            size="large"
+            icon={<ProjectOutlined />}
+            onClick={() => handleQuickLogin(UserRole.PROJECT_OWNER)}
+            style={{
+              borderColor: '#52c41a',
+              color: '#52c41a',
+            }}
+          >
+            项目方登录（华娱传媒）
+          </Button>
+          
+          <Button
+            block
+            size="large"
+            icon={<CrownOutlined />}
+            onClick={() => handleQuickLogin(UserRole.ADMIN)}
+            style={{
+              borderColor: '#faad14',
+              color: '#faad14',
+            }}
+          >
+            管理员登录（MIFC平台）
+          </Button>
+        </Space>
       </Card>
     </div>
   )

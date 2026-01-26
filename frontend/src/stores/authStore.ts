@@ -12,7 +12,7 @@ interface AuthState {
   register: (data: RegisterRequest) => Promise<void>
   logout: () => void
   fetchCurrentUser: () => Promise<void>
-  devLogin: () => void
+  devLogin: (role?: UserRole) => void
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -80,19 +80,40 @@ export const useAuthStore = create<AuthState>()(
         }
       },
 
-      // 开发模式：跳过登录直接进入系统
-      devLogin: () => {
+      // 开发模式：快速登录（支持三种角色）
+      devLogin: (role: UserRole = UserRole.ADMIN) => {
         const now = new Date().toISOString()
+        
+        // 根据角色生成不同的用户信息
+        const userProfiles = {
+          [UserRole.INVESTOR]: {
+            id: 'investor-inst-001',
+            name: '水珠资本管理有限公司',
+            email: 'shuizhu@capital.com',
+            phone: '021-68886666',
+          },
+          [UserRole.PROJECT_OWNER]: {
+            id: 'project-owner-001',
+            name: '华娱文化传媒集团',
+            email: 'concert@operator.com',
+            phone: '010-84568888',
+          },
+          [UserRole.ADMIN]: {
+            id: 'admin-001',
+            name: 'MIFC 平台管理员',
+            email: 'admin@mifc.com',
+            phone: '400-888-6666',
+          },
+        }
+        
+        const profile = userProfiles[role]
         const devUser: User = {
-          id: 'dev-admin-001',
-          name: '开发管理员',
-          email: 'admin@dev.local',
-          role: UserRole.ADMIN,
-          phone: '13800138000',
+          ...profile,
+          role,
           createdAt: now,
           updatedAt: now,
         }
-        const devToken = 'dev-token-' + Date.now()
+        const devToken = `dev-token-${role}-${Date.now()}`
         
         localStorage.setItem('token', devToken)
         set({

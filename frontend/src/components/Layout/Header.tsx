@@ -1,7 +1,8 @@
-import { Layout, Avatar, Dropdown, Space } from 'antd'
-import { UserOutlined, LogoutOutlined } from '@ant-design/icons'
+import { Layout, Avatar, Dropdown, Space, Tag } from 'antd'
+import { UserOutlined, LogoutOutlined, BankOutlined, ProjectOutlined, CrownOutlined } from '@ant-design/icons'
 import { useAuthStore } from '@/stores/authStore'
 import { useNavigate } from 'react-router-dom'
+import { UserRole } from '@/types'
 import type { MenuProps } from 'antd'
 
 const { Header: AntHeader } = Layout
@@ -13,6 +14,22 @@ const Header = () => {
   const handleLogout = () => {
     logout()
     navigate('/login')
+  }
+
+  // 角色标签配置
+  const getRoleTag = () => {
+    if (!user) return null
+    
+    switch (user.role) {
+      case UserRole.INVESTOR:
+        return <Tag icon={<BankOutlined />} color="blue">投资人</Tag>
+      case UserRole.PROJECT_OWNER:
+        return <Tag icon={<ProjectOutlined />} color="green">项目方</Tag>
+      case UserRole.ADMIN:
+        return <Tag icon={<CrownOutlined />} color="gold">管理员</Tag>
+      default:
+        return null
+    }
   }
 
   const items: MenuProps['items'] = [
@@ -41,6 +58,7 @@ const Header = () => {
         <Space style={{ cursor: 'pointer' }}>
           <Avatar icon={<UserOutlined />} />
           <span>{user?.name || '用户'}</span>
+          {getRoleTag()}
         </Space>
       </Dropdown>
     </AntHeader>

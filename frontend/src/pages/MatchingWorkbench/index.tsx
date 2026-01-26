@@ -11,10 +11,13 @@ const { TextArea } = Input
 
 // 资产类型标签
 const assetTypeLabels: Record<string, { label: string; color: string; icon: string }> = {
-  RACING_TRACK: { label: '轻资产赛道', color: '#91d5ff', icon: '🏁' },
-  DOUYIN_STREAMING: { label: '抖音投流', color: '#95de64', icon: '📱' },
-  CAMPUS_FACILITY: { label: '天猫校园', color: '#ffd591', icon: '🏫' },
-  CONCERT_TICKET: { label: '演唱会门票', color: '#ffa39e', icon: '🎤' },
+  MIFC_FUND_LP: { label: 'MIFC主基金LP', color: '#597ef7', icon: '💎' },
+  MIFC_ABS: { label: 'MIFC ABS', color: '#13c2c2', icon: '🛡️' },
+  CO_INVESTMENT: { label: '跟投项目', color: '#ff7a45', icon: '🤝' },
+  RACING_TRACK: { label: '赛车场', color: '#91d5ff', icon: '🏁' },
+  STREAMING: { label: '新媒体', color: '#95de64', icon: '📱' },
+  CAMPUS_FACILITY: { label: '校园设施', color: '#ffd591', icon: '🏫' },
+  CONCERT_TICKET: { label: '演唱会', color: '#ffa39e', icon: '🎤' },
 }
 
 // 风险等级标签
@@ -37,77 +40,47 @@ interface InvestorDemand {
   createdAt: string
 }
 
-// 预设的需求卡 Demo 数据（调整参数使匹配更丰富）
+// 预设的需求卡 Demo 数据（对应4个真实投资人账户）
 const demoInvestorDemands: InvestorDemand[] = [
   {
     id: 'demand-001',
-    investorName: '张先生 (稳健型)',
-    investmentAmount: 50,
-    targetReturn: 7,
-    riskLevel: 'LOW',
-    notes: '偏好稳定现金流项目，低风险优先',
-    createdAt: '2026-01-20T10:00:00.000Z',
+    investorName: '水珠资本管理有限公司',
+    investmentAmount: 2000, // 2000万
+    targetReturn: 15,
+    preferredType: 'MIFC_FUND_LP',
+    riskLevel: 'HIGH',
+    notes: '追求高收益，可承受劣后级风险，偏好主基金LP份额',
+    createdAt: '2024-01-15T10:00:00.000Z',
   },
   {
     id: 'demand-002',
-    investorName: '李女士 (平衡型)',
-    investmentAmount: 150,
-    targetReturn: 10,
-    riskLevel: 'MEDIUM',
-    notes: '可接受中等风险，看重项目团队',
-    createdAt: '2026-01-19T14:30:00.000Z',
+    investorName: '水流资产管理有限公司',
+    investmentAmount: 1500, // 1500万
+    targetReturn: 8,
+    preferredType: 'MIFC_ABS',
+    riskLevel: 'LOW',
+    notes: '追求稳健收益，优先级份额优先，固定收益产品',
+    createdAt: '2024-02-10T14:30:00.000Z',
   },
   {
     id: 'demand-003',
-    investorName: '王总 (激进型)',
-    investmentAmount: 80,
-    targetReturn: 15,
-    notes: '追求高回报，不限行业和风险',
-    createdAt: '2026-01-18T09:15:00.000Z',
+    investorName: '水滴信托有限责任公司',
+    investmentAmount: 300, // 300万
+    targetReturn: 20,
+    preferredType: 'CO_INVESTMENT',
+    riskLevel: 'HIGH',
+    notes: '关注高成长跟投项目，可承受高风险，偏好新媒体和文娱类',
+    createdAt: '2025-11-20T09:15:00.000Z',
   },
   {
     id: 'demand-004',
-    investorName: '赵经理 (大额)',
-    investmentAmount: 200,
-    targetReturn: 8,
-    notes: '大额投资，不限行业，看重稳定性',
-    createdAt: '2026-01-17T16:45:00.000Z',
-  },
-  {
-    id: 'demand-005',
-    investorName: '陈董 (赛车爱好)',
-    investmentAmount: 100,
-    targetReturn: 10,
-    preferredType: 'RACING_TRACK',
-    notes: '赛车运动爱好者，专注赛道投资',
-    createdAt: '2026-01-16T11:20:00.000Z',
-  },
-  {
-    id: 'demand-006',
-    investorName: '孙女士 (娱乐投资)',
-    investmentAmount: 300,
+    investorName: '张明远（高净值个人）',
+    investmentAmount: 100, // 100万
     targetReturn: 12,
-    preferredType: 'CONCERT_TICKET',
-    notes: '专注娱乐产业，演唱会项目优先',
-    createdAt: '2026-01-15T09:00:00.000Z',
-  },
-  {
-    id: 'demand-007',
-    investorName: '周先生 (小额)',
-    investmentAmount: 30,
-    targetReturn: 10,
-    notes: '小额试水，优先选择热门项目',
-    createdAt: '2026-01-14T15:30:00.000Z',
-  },
-  {
-    id: 'demand-008',
-    investorName: '吴总 (互联网)',
-    investmentAmount: 100,
-    targetReturn: 18,
-    preferredType: 'DOUYIN_STREAMING',
-    riskLevel: 'HIGH',
-    notes: '熟悉互联网，专注抖音投流赛道',
-    createdAt: '2026-01-13T10:45:00.000Z',
+    preferredType: 'CO_INVESTMENT',
+    riskLevel: 'MEDIUM',
+    notes: '个人投资者，偏好演唱会和体育赛事类项目，中等风险',
+    createdAt: '2026-01-05T16:45:00.000Z',
   },
 ]
 
@@ -152,7 +125,7 @@ const MatchingWorkbench = () => {
       }
       
       // 目标收益匹配（项目收益 >= 需求目标）
-      if (asset.expectedReturnMin < demand.targetReturn) {
+      if ((asset.expectedReturnMin || asset.expectedReturn?.min || 0) < demand.targetReturn) {
         return false
       }
       
@@ -180,7 +153,7 @@ const MatchingWorkbench = () => {
       }
       
       // 目标收益匹配
-      if (asset.expectedReturnMin < demand.targetReturn) {
+      if ((asset.expectedReturnMin || asset.expectedReturn?.min || 0) < demand.targetReturn) {
         return false
       }
       

@@ -6,8 +6,11 @@ import {
   FundOutlined,
   ControlOutlined,
   AppstoreOutlined,
+  ProjectOutlined,
 } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
+import { useAuthStore } from '@/stores/authStore'
+import { UserRole } from '@/types'
 
 const { Sider } = Layout
 
@@ -16,34 +19,73 @@ type MenuItem = Required<MenuProps>['items'][number]
 const Sidebar = () => {
   const navigate = useNavigate()
   const location = useLocation()
+  const { user } = useAuthStore()
 
-  const items: MenuItem[] = [
-    {
-      key: '/',
-      icon: <DashboardOutlined />,
-      label: '首页仪表板',
-    },
-    {
-      key: '/marketplace',
-      icon: <ShoppingOutlined />,
-      label: '市场浏览器',
-    },
-    {
-      key: '/portfolio',
-      icon: <FundOutlined />,
-      label: '投资组合',
-    },
-    {
-      key: '/matching',
-      icon: <AppstoreOutlined />,
-      label: '匹配工作台',
-    },
-    {
-      key: '/central-kitchen',
-      icon: <ControlOutlined />,
-      label: '中央厨房',
-    },
-  ]
+  // 根据用户角色生成菜单项
+  const getMenuItems = (): MenuItem[] => {
+    const allItems: MenuItem[] = [
+      {
+        key: '/',
+        icon: <DashboardOutlined />,
+        label: '首页仪表板',
+      },
+      {
+        key: '/marketplace',
+        icon: <ShoppingOutlined />,
+        label: '市场浏览器',
+      },
+      {
+        key: '/portfolio',
+        icon: <FundOutlined />,
+        label: '投资组合',
+      },
+      {
+        key: '/matching',
+        icon: <AppstoreOutlined />,
+        label: '匹配工作台',
+      },
+      {
+        key: '/projects',
+        icon: <ProjectOutlined />,
+        label: '我的项目',
+      },
+      {
+        key: '/central-kitchen',
+        icon: <ControlOutlined />,
+        label: '中央厨房',
+      },
+    ]
+
+    // 根据角色过滤菜单
+    if (!user) return []
+
+    switch (user.role) {
+      case UserRole.INVESTOR:
+        // 投资人：首页、市场浏览器、投资组合、匹配工作台
+        return allItems.filter(item => 
+          ['/', '/marketplace', '/portfolio', '/matching'].includes(item?.key as string)
+        )
+      
+      case UserRole.PROJECT_OWNER:
+        // 项目方：首页、市场浏览器、我的项目
+        return allItems.filter(item => 
+          ['/', '/marketplace', '/projects'].includes(item?.key as string)
+        )
+      
+      case UserRole.ADMIN:
+        // 管理员：所有页面
+        return allItems.filter(item => 
+          item?.key !== '/projects' // 管理员不需要"我的项目"
+        )
+      
+      default:
+        return allItems.filter(item => 
+          ['/', '/marketplace'].includes(item?.key as string)
+        )
+    }
+  }
+
+  const items = getMenuItems()
 
   const handleMenuClick: MenuProps['onClick'] = (e) => {
     navigate(e.key)

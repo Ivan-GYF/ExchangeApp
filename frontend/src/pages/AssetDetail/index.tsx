@@ -15,7 +15,6 @@ import {
   Spin,
   Divider,
   Timeline,
-  Table,
 } from 'antd'
 import {
   ArrowLeftOutlined,
@@ -27,10 +26,9 @@ import { Asset, Milestone } from '@/types'
 import './AssetDetail.css'
 
 const assetTypeLabels: Record<string, { label: string; color: string; icon: string }> = {
-  RACING_TRACK: { label: '轻资产赛道', color: '#91d5ff', icon: '🏁' },
-  DOUYIN_STREAMING: { label: '抖音投流', color: '#95de64', icon: '📱' },
-  CAMPUS_FACILITY: { label: '天猫校园', color: '#ffd591', icon: '🏫' },
-  CONCERT_TICKET: { label: '演唱会门票', color: '#ffa39e', icon: '🎤' },
+  MIFC_FUND_LP: { label: 'MIFC主基金LP', color: '#597ef7', icon: '💎' },
+  MIFC_ABS: { label: 'MIFC ABS', color: '#13c2c2', icon: '🛡️' },
+  CO_INVESTMENT: { label: '跟投项目', color: '#ff7a45', icon: '🤝' },
 }
 
 const riskLevelLabels: Record<string, { label: string; color: string }> = {
