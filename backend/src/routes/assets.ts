@@ -7,6 +7,9 @@ const router = Router()
 // 运行时动态资产数组（包含预设资产 + 审批通过的项目转换的资产）
 let runtimeAssets = [...allAssets]
 
+console.log(`📦 初始化资产数组，预设资产数量: ${allAssets.length}`)
+console.log(`📦 runtimeAssets 初始化数量: ${runtimeAssets.length}`)
+
 // 转换资产数据格式以匹配前端期望
 const transformAsset = (asset: any) => ({
   ...asset,
@@ -88,6 +91,12 @@ router.get('/:id', (req, res) => {
 // 添加新资产（内部使用，由项目审批调用）
 export function addAssetFromProject(asset: any) {
   runtimeAssets.push(asset)
+}
+
+// 获取运行时资产列表（供其他模块使用）
+export function getRuntimeAssets() {
+  console.log(`📊 getRuntimeAssets 被调用，当前资产数量: ${runtimeAssets.length}`)
+  return [...runtimeAssets]
 }
 
 // 从市场移除资产（内部使用，由下架调用）

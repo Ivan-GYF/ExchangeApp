@@ -128,10 +128,10 @@ export const seedAssets = [
   // 演唱会类
   {
     id: 'asset-001',
-    title: '周杰伦2026巡回演唱会收益权（跟投）',
+    title: '张学友2026巡回演唱会收益权（跟投）',
     description: `【跟投机会】本项目为MIFC主基金投资溢出份额。项目总需求1500万，主基金投资1000万（单项目限额），溢出500万开放跟投。
 
-周杰伦"嘉年华"世界巡回演唱会中国站门票销售及周边商品收益权，预计观众超40万人次。跟投投资人与主基金享有同等权益。`,
+张学友"60+巡回演唱会"世界巡回演唱会中国站门票销售及周边商品收益权，预计观众超40万人次。跟投投资人与主基金享有同等权益。`,
     type: 'CO_INVESTMENT',
     originalCategory: 'CONCERT_TICKET',
     targetAmount: 5000000,
@@ -460,7 +460,7 @@ export const recentActivities = [
   {
     id: 'act-002',
     type: 'ASSET_APPROVED',
-    description: '"周杰伦2026巡回演唱会收益权（跟投）"通过尽职调查审核',
+    description: '"张学友2026巡回演唱会收益权（跟投）"通过尽职调查审核',
     createdAt: '2026-01-24T14:20:00.000Z',
   },
   {
@@ -533,7 +533,7 @@ export const seedInvestments = [
   {
     id: 'inv-demo-004',
     userId: 'investor-individual-001', // 张明远
-    assetId: 'asset-001',  // 周杰伦演唱会
+    assetId: 'asset-001',  // 张学友演唱会
     amount: 1000000,
     managementFee: 20000,
     transactionFee: 10000,

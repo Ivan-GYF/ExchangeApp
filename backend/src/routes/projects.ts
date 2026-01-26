@@ -1,6 +1,6 @@
 import { Router } from 'express'
 import { demoProjects, ProjectSubmission, projectToAsset } from '../data/demo-projects'
-import { addAssetFromProject } from './assets'
+import { addAssetFromProject, removeAssetFromMarket } from './assets'
 
 const router = Router()
 
@@ -134,6 +134,43 @@ router.post('/:id/submit', (req, res) => {
   })
 })
 
+// 撤回提交（项目方）
+router.post('/:id/withdraw', (req, res) => {
+  const index = projects.findIndex(p => p.id === req.params.id)
+
+  if (index === -1) {
+    return res.status(404).json({ 
+      success: false,
+      error: 'Project not found' 
+    })
+  }
+
+  const project = projects[index]
+
+  // 只能撤回待审核或审核中的项目
+  if (project.status !== 'PENDING' && project.status !== 'UNDER_REVIEW') {
+    return res.status(400).json({ 
+      success: false,
+      error: 'Only pending or under review projects can be withdrawn' 
+    })
+  }
+
+  // 撤回后恢复为草稿状态
+  projects[index] = {
+    ...project,
+    status: 'DRAFT',
+    submittedAt: undefined,
+    updatedAt: new Date().toISOString(),
+  }
+
+  console.log(`↩️ 项目 "${project.title}" 已被项目方撤回提交，恢复为草稿状态`)
+
+  res.json({
+    success: true,
+    data: projects[index]
+  })
+})
+
 // 审核项目（管理员）
 router.post('/:id/review', (req, res) => {
   const { action, notes } = req.body // action: 'APPROVE' | 'REJECT'
@@ -201,6 +238,17 @@ router.post('/:id/revoke', (req, res) => {
 
   // 保存原状态用于日志
   const originalStatus = project.status
+
+  // 如果是已批准的项目，需要同步下架对应的资产
+  if (originalStatus === 'APPROVED') {
+    const assetId = `asset-from-${project.id}`
+    const removed = removeAssetFromMarket(assetId)
+    if (removed) {
+      console.log(`📤 撤销审核：资产 ${assetId} 已从市场下架`)
+    } else {
+      console.log(`⚠️ 撤销审核：未找到对应资产 ${assetId}（可能已被下架）`)
+    }
+  }
 
   // 撤销审核，状态改回待审核
   projects[index] = {

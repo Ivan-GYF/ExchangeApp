@@ -1,20 +1,85 @@
 import { Router } from 'express'
-import { dashboardStats, trendData, allAssets, recentActivities } from '../data/seed-data'
+import { dashboardStats, trendData, recentActivities } from '../data/seed-data'
+import { getRuntimeAssets } from './assets'
+import { demoUsers } from '../data/demo-users'
 
 const router = Router()
 
-// ????? KPI ??????? kpi ????
+// ???? KPI ???????????
 router.get('/', (req, res) => {
+  const runtimeAssets = getRuntimeAssets()
+  
+  console.log(`?? ????? - ????: ${runtimeAssets.length}`)
+  
+  // ????????
+  const totalAssets = runtimeAssets.reduce((sum, asset) => sum + asset.targetAmount, 0)
+  const totalInvestors = demoUsers.filter(u => u.role === 'INVESTOR').length // ?????????
+  const totalProjects = runtimeAssets.length
+  const successRate = 92.5
+  
+  console.log(`?? ???? - ???: ${totalAssets}, ???: ${totalInvestors}, ???: ${totalProjects}`)
+  
+  const stats = {
+    totalAssets,
+    totalInvestors,
+    totalProjects,
+    successRate,
+    // ???????
+    assetGrowth: dashboardStats.assetGrowth,
+    investorGrowth: dashboardStats.investorGrowth,
+    projectGrowth: dashboardStats.projectGrowth,
+    successRateChange: dashboardStats.successRateChange,
+  }
+  
   res.json({
     success: true,
-    data: dashboardStats
+    data: stats
   })
 })
 
 router.get('/kpi', (req, res) => {
+  const runtimeAssets = getRuntimeAssets()
+  
+  console.log(`?? KPI?? - ????: ${runtimeAssets.length}`)
+  
+  // ????????
+  const totalAssets = runtimeAssets.reduce((sum, asset) => sum + asset.targetAmount, 0)
+  const totalInvestors = demoUsers.filter(u => u.role === 'INVESTOR').length // ?????????
+  const totalProjects = runtimeAssets.length
+  
+  // ???????????
+  // ??: ?(???? × ???????) / ?(????)
+  let weightedReturnSum = 0
+  let totalWeight = 0
+  
+  runtimeAssets.forEach(asset => {
+    const weight = asset.targetAmount
+    // ????????????
+    const avgReturn = asset.expectedReturn 
+      ? (asset.expectedReturn.min + asset.expectedReturn.max) / 2 
+      : 0
+    
+    weightedReturnSum += weight * avgReturn
+    totalWeight += weight
+  })
+  
+  const avgReturn = totalWeight > 0 ? weightedReturnSum / totalWeight : 0
+  
+  console.log(`?? KPI???? - ???: ${totalAssets}, ???: ${totalInvestors}, ???: ${totalProjects}, ??????: ${avgReturn.toFixed(2)}%`)
+  
+  const stats = {
+    totalAssets,
+    totalInvestors,
+    totalProjects,
+    avgReturn: Number(avgReturn.toFixed(2)), // ??????
+    assetGrowth: dashboardStats.assetGrowth,
+    investorGrowth: dashboardStats.investorGrowth,
+    projectGrowth: dashboardStats.projectGrowth,
+  }
+  
   res.json({
     success: true,
-    data: dashboardStats
+    data: stats
   })
 })
 
@@ -28,8 +93,10 @@ router.get('/trends', (req, res) => {
 
 // ??????
 router.get('/featured', (req, res) => {
-  // ?????????4???
-  const featured = [...allAssets]
+  const runtimeAssets = getRuntimeAssets()
+  
+  // ??????????4?
+  const featured = [...runtimeAssets]
     .sort((a, b) => (b.raisedAmount / b.targetAmount) - (a.raisedAmount / a.targetAmount))
     .slice(0, 4)
   

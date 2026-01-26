@@ -1,6 +1,6 @@
 import { useState, useEffect } from 'react'
 import { Card, Table, Tag, Button, Empty, Space, Descriptions, Modal, message } from 'antd'
-import { PlusOutlined, EditOutlined, EyeOutlined, FileTextOutlined, SendOutlined } from '@ant-design/icons'
+import { PlusOutlined, EditOutlined, EyeOutlined, FileTextOutlined, SendOutlined, RollbackOutlined } from '@ant-design/icons'
 import { useAuthStore } from '@/stores/authStore'
 import { apiClient } from '@/services/api'
 import ProjectForm from '@/components/ProjectForm'
@@ -141,7 +141,7 @@ const MyProjects = () => {
   const handleSubmitForReview = async (project: Project) => {
     Modal.confirm({
       title: '提交审核',
-      content: `确认将项目"${project.title}"提交审核吗？提交后将无法修改。`,
+      content: `确认将项目"${project.title}"提交审核吗？提交后可以撤回。`,
       okText: '确认提交',
       cancelText: '取消',
       onOk: async () => {
@@ -151,6 +151,25 @@ const MyProjects = () => {
           fetchProjects()
         } catch (error: any) {
           message.error(error.response?.data?.error || '提交失败')
+        }
+      },
+    })
+  }
+
+  const handleWithdrawSubmission = async (project: Project) => {
+    Modal.confirm({
+      title: '撤回提交',
+      content: `确认撤回项目"${project.title}"的提交吗？撤回后项目将恢复为草稿状态，可以重新编辑和提交。`,
+      okText: '确认撤回',
+      cancelText: '取消',
+      okButtonProps: { danger: true },
+      onOk: async () => {
+        try {
+          await apiClient.post(`/projects/${project.id}/withdraw`)
+          message.success('项目已撤回，恢复为草稿状态')
+          fetchProjects()
+        } catch (error: any) {
+          message.error(error.response?.data?.error || '撤回失败')
         }
       },
     })
@@ -226,7 +245,7 @@ const MyProjects = () => {
     {
       title: '操作',
       key: 'action',
-      width: 150,
+      width: 200,
       fixed: 'right' as const,
       render: (_: any, record: Project) => (
         <Space>
@@ -254,6 +273,16 @@ const MyProjects = () => {
                 提交审核
               </Button>
             </>
+          )}
+          {(record.status === 'PENDING' || record.status === 'UNDER_REVIEW') && (
+            <Button 
+              type="link" 
+              danger
+              icon={<RollbackOutlined />}
+              onClick={() => handleWithdrawSubmission(record)}
+            >
+              撤回提交
+            </Button>
           )}
         </Space>
       ),
