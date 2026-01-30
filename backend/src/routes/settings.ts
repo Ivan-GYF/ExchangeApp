@@ -259,7 +259,7 @@ router.post('/2fa/totp/setup', (req, res) => {
     success: true,
     data: {
       secret,
-      qrCode: `otpauth://totp/LakesideExchange:${userId}?secret=${secret}&issuer=LakesideExchange`,
+      qrCode: `otpauth://totp/LakeshoreExchange:${userId}?secret=${secret}&issuer=LakeshoreExchange`,
     }
   })
 })

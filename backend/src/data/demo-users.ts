@@ -134,7 +134,7 @@ export const demoUsers = [
     phone: '400-888-6666',
     organizationType: 'INSTITUTION',
     institution: {
-      name: 'Lakeside Exchange 湖畔通市场',
+      name: 'Lakeshore Exchange 湖畔通市场',
       type: '金融科技平台',
       registrationNumber: '统一社会信用代码：91310000MA1FLAKE01',
     },

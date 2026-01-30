@@ -159,7 +159,7 @@ const TwoFactorAuth = () => {
 
             <div className="qr-code-container">
               <QRCode
-                value={`otpauth://totp/LakesideExchange:user@example.com?secret=${secret}&issuer=LakesideExchange`}
+                value={`otpauth://totp/LakeshoreExchange:user@example.com?secret=${secret}&issuer=LakeshoreExchange`}
                 size={200}
               />
               <p style={{ marginTop: 16, color: 'rgba(0,0,0,0.45)' }}>

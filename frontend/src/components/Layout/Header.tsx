@@ -53,7 +53,7 @@ const Header = () => {
   return (
     <AntHeader className="header-container">
       <div className="header-title">
-        Lakeside Exchange 湖畔通市场
+        Lakeshore Exchange 湖畔通市场
       </div>
       <Dropdown 
         menu={{ items, className: 'header-dropdown-menu' }} 

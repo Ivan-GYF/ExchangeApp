@@ -66,7 +66,7 @@ const Login = () => {
     <div className="login-container">
       <Card className="login-card" bordered={false}>
         <div className="login-header">
-          <h1>Lakeside Exchange 湖畔通市场</h1>
+          <h1>Lakeshore Exchange 湖畔通市场</h1>
           <p>投资资产交易平台</p>
         </div>
 

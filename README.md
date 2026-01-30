@@ -1,4 +1,4 @@
-# Lakeside Exchange 湖畔通市场 - 外挂市场系统
+# Lakeshore Exchange 湖畔通市场 - 外挂市场系统
 
 ## 项目概述
 
