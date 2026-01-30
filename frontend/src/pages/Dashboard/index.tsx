@@ -320,7 +320,7 @@ const Dashboard = () => {
                         {assetTypeLabels[asset.type]?.label || asset.type}
                       </Tag>
                     </div>
-                    <div style={{ fontWeight: 600, marginBottom: 8, fontSize: 14 }}>
+                    <div style={{ fontWeight: 600, marginBottom: 8, fontSize: 18 }}>
                       {asset.title.length > 18 ? asset.title.substring(0, 18) + '...' : asset.title}
                     </div>
                     <div style={{ marginBottom: 8 }}>

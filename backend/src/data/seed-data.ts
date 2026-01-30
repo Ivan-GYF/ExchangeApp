@@ -25,7 +25,7 @@ export const mifcFundAssets = [
 超额收益：主基金整体收益超过8%部分，优先级获得固定8%后，剩余收益的80%归劣后级投资人
 
 【风险提示】
-劣后级份额承担优先级保本保息义务，存在本金损失风险。适合风险承受能力较强的机构投资者。`,
+劣后级份额承担优先级保本保息义务，存在一定本金风险。主基金采用分散投资策略，单一项目限额1000万，有效控制集中度风险。适合有一定风险承受能力的机构投资者。`,
     type: 'MIFC_FUND_LP',
     targetAmount: 400000000,  // 4亿
     raisedAmount: 280000000,  // 已募2.8亿
@@ -36,8 +36,8 @@ export const mifcFundAssets = [
       '基础收益（15%）': 75,
       '超额收益分成': 25,
     },
-    riskLevel: 'HIGH',
-    riskScore: 68,
+    riskLevel: 'MEDIUM',
+    riskScore: 55,
     region: '全国',
     city: '上海',
     status: 'FUNDING',

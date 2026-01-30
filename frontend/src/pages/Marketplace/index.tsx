@@ -26,7 +26,7 @@ const Marketplace = () => {
   const [filters, setFilters] = useState({
     type: undefined as string | undefined,
     riskLevel: undefined as string | undefined,
-    returnRange: [0, 25] as [number, number],
+    returnRange: [0, 40] as [number, number],
   })
 
   useEffect(() => {
@@ -67,7 +67,7 @@ const Marketplace = () => {
     setFilters({
       type: undefined,
       riskLevel: undefined,
-      returnRange: [0, 25],
+      returnRange: [0, 40],
     })
   }
 
@@ -120,12 +120,15 @@ const Marketplace = () => {
               <Slider
                 range
                 min={0}
-                max={25}
+                max={40}
                 value={filters.returnRange}
                 onChange={(value) => handleFilterChange('returnRange', value as [number, number])}
                 marks={{
                   0: '0%',
-                  25: '25%',
+                  10: '10%',
+                  20: '20%',
+                  30: '30%',
+                  40: '40%',
                 }}
               />
               <div style={{ textAlign: 'center', marginTop: 8, color: '#666' }}>

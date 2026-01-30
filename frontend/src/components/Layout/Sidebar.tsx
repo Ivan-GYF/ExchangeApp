@@ -7,6 +7,7 @@ import {
   ControlOutlined,
   AppstoreOutlined,
   ProjectOutlined,
+  SettingOutlined,
 } from '@ant-design/icons'
 import type { MenuProps } from 'antd'
 import { useAuthStore } from '@/stores/authStore'
@@ -55,6 +56,11 @@ const Sidebar = () => {
         icon: <ControlOutlined />,
         label: '中央厨房',
       },
+      {
+        key: '/settings',
+        icon: <SettingOutlined />,
+        label: '偏好设置',
+      },
     ]
 
     // 根据角色过滤菜单
@@ -62,15 +68,15 @@ const Sidebar = () => {
 
     switch (user.role) {
       case UserRole.INVESTOR:
-        // 投资人：首页、市场浏览器、投资组合、匹配工作台
+        // 投资人：首页、市场浏览器、投资组合、匹配工作台、偏好设置
         return allItems.filter(item => 
-          ['/', '/marketplace', '/portfolio', '/matching'].includes(item?.key as string)
+          ['/', '/marketplace', '/portfolio', '/matching', '/settings'].includes(item?.key as string)
         )
       
       case UserRole.PROJECT_OWNER:
-        // 项目方：首页、市场浏览器、我的项目
+        // 项目方：首页、市场浏览器、我的项目、偏好设置
         return allItems.filter(item => 
-          ['/', '/marketplace', '/projects'].includes(item?.key as string)
+          ['/', '/marketplace', '/projects', '/settings'].includes(item?.key as string)
         )
       
       case UserRole.ADMIN:

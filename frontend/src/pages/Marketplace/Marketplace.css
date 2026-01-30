@@ -50,8 +50,8 @@
   margin-bottom: 8px;
 }
 
-.asset-title {
-  font-size: 18px;
+.marketplace-container .asset-card .asset-title {
+  font-size: 18px !important;
   font-weight: 500;
   margin: 8px 0;
   color: rgba(0, 0, 0, 0.85);

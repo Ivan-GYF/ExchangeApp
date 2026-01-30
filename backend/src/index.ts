@@ -48,6 +48,7 @@ import investmentRoutes from './routes/investments'
 import matchingRoutes from './routes/matching'
 import centralKitchenRoutes from './routes/central-kitchen'
 import projectRoutes from './routes/projects'
+import settingsRoutes from './routes/settings'
 
 // 使用路由
 app.use('/api/auth', authRoutes)
@@ -57,6 +58,7 @@ app.use('/api/investments', investmentRoutes)
 app.use('/api/matching', matchingRoutes)
 app.use('/api/central-kitchen', centralKitchenRoutes)
 app.use('/api/projects', projectRoutes)
+app.use('/api/settings', settingsRoutes)
 
 // 404处理
 app.use((_req, res) => {
