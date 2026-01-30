@@ -1,7 +1,7 @@
 {
-  "name": "marketplace-exchange-backend",
+  "name": "lakeside-exchange-backend",
   "version": "1.0.0",
-  "description": "Marketplace Exchange Platform - Backend API",
+  "description": "Lakeside Exchange 湖畔通市场 - Backend API",
   "main": "dist/index.js",
   "scripts": {
     "dev": "tsx watch src/index.ts",

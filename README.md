@@ -1,4 +1,4 @@
-# Marketplace Exchange Platform - 外挂市场系统
+# Lakeside Exchange 湖畔通市场 - 外挂市场系统
 
 ## 项目概述
 

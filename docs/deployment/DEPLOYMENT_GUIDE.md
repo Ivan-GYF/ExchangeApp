@@ -1,4 +1,4 @@
-# Marketplace Exchange Platform - 部署指南
+# Lakeside Exchange 湖畔通市场 - 部署指南
 
 ## 环境要求
 

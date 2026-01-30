@@ -4,6 +4,7 @@ import { useAuthStore } from '@/stores/authStore'
 import { useNavigate } from 'react-router-dom'
 import { UserRole } from '@/types'
 import type { MenuProps } from 'antd'
+import './Header.css'
 
 const { Header: AntHeader } = Layout
 
@@ -50,14 +51,17 @@ const Header = () => {
   ]
 
   return (
-    <AntHeader style={{ background: '#fff', padding: '0 24px', display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-      <div style={{ fontSize: '18px', fontWeight: 600 }}>
-        Marketplace Exchange Platform
+    <AntHeader className="header-container">
+      <div className="header-title">
+        Lakeside Exchange 湖畔通市场
       </div>
-      <Dropdown menu={{ items }} placement="bottomRight">
-        <Space style={{ cursor: 'pointer' }}>
+      <Dropdown 
+        menu={{ items, className: 'header-dropdown-menu' }} 
+        placement="bottomRight"
+      >
+        <Space className="header-user-section">
           <Avatar icon={<UserOutlined />} />
-          <span>{user?.name || '用户'}</span>
+          <span className="header-user-name">{user?.name || '用户'}</span>
           {getRoleTag()}
         </Space>
       </Dropdown>

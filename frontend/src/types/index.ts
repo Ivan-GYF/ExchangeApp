@@ -3,7 +3,7 @@
 export enum UserRole {
   INVESTOR = 'INVESTOR',           // 投资人
   PROJECT_OWNER = 'PROJECT_OWNER', // 项目方
-  ADMIN = 'ADMIN',                 // 交易所管理员
+  ADMIN = 'ADMIN',                 // 平台管理员
 }
 
 export enum RiskTolerance {

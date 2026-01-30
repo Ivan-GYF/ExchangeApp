@@ -1,7 +1,7 @@
 {
-  "name": "marketplace-exchange-frontend",
+  "name": "lakeside-exchange-frontend",
   "version": "1.0.0",
-  "description": "Marketplace Exchange Platform - Frontend Application",
+  "description": "Lakeside Exchange 湖畔通市场 - Frontend Application",
   "type": "module",
   "scripts": {
     "dev": "vite",

@@ -344,7 +344,7 @@ export function createProjectFromAsset(asset: any) {
   const newProject: ProjectSubmission = {
     id: `project-from-${asset.id}`, // 使用 asset ID 生成项目ID
     ownerId: 'admin-001', // 默认归属于管理员
-    ownerName: 'MIFC平台管理员',
+    ownerName: '湖畔通平台管理员',
     title: asset.title,
     description: asset.description,
     type: asset.type,

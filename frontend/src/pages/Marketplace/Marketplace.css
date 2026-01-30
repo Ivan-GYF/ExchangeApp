@@ -37,38 +37,42 @@
   transition: all 0.3s ease;
 }
 
+.asset-card .ant-card-body {
+  padding: 16px;
+}
+
 .asset-card:hover {
   transform: translateY(-4px);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
 }
 
 .asset-header {
-  margin-bottom: 12px;
+  margin-bottom: 8px;
 }
 
 .asset-title {
-  font-size: 16px;
-  font-weight: 600;
-  margin: 12px 0;
+  font-size: 18px;
+  font-weight: 500;
+  margin: 8px 0;
   color: rgba(0, 0, 0, 0.85);
-  line-height: 1.5;
+  line-height: 1.4;
 }
 
 .asset-description {
-  font-size: 14px;
+  font-size: 13px;
   color: rgba(0, 0, 0, 0.65);
-  line-height: 1.6;
-  margin-bottom: 16px;
-  min-height: 44px;
+  line-height: 1.5;
+  margin-bottom: 12px;
+  min-height: 40px;
 }
 
 .asset-stats {
   display: flex;
   justify-content: space-between;
-  padding: 12px 0;
+  padding: 10px 0;
   border-top: 1px solid #f0f0f0;
   border-bottom: 1px solid #f0f0f0;
-  margin-bottom: 16px;
+  margin-bottom: 12px;
 }
 
 .stat-item {
@@ -78,13 +82,13 @@
 }
 
 .stat-label {
-  font-size: 12px;
+  font-size: 11px;
   color: rgba(0, 0, 0, 0.45);
-  margin-bottom: 4px;
+  margin-bottom: 3px;
 }
 
 .stat-value {
-  font-size: 16px;
+  font-size: 14px;
   font-weight: 600;
   color: rgba(0, 0, 0, 0.85);
 }
@@ -94,22 +98,22 @@
 }
 
 .asset-progress {
-  margin-top: 16px;
+  margin-top: 12px;
 }
 
 .progress-info {
   display: flex;
   justify-content: space-between;
-  font-size: 14px;
-  margin-bottom: 8px;
+  font-size: 13px;
+  margin-bottom: 6px;
   color: rgba(0, 0, 0, 0.65);
 }
 
 .progress-footer {
   display: flex;
   justify-content: space-between;
-  font-size: 12px;
-  margin-top: 8px;
+  font-size: 11px;
+  margin-top: 6px;
   color: rgba(0, 0, 0, 0.45);
 }
 

@@ -155,14 +155,14 @@ const Marketplace = () => {
                 const progress = (asset.raisedAmount / asset.targetAmount) * 100
 
                 return (
-                  <Col xs={24} md={12} key={asset.id}>
+                  <Col xs={24} sm={12} lg={8} key={asset.id}>
                     <Card
                       hoverable
                       className="asset-card"
                       onClick={() => navigate(`/assets/${asset.id}`)}
                     >
                       <div className="asset-header">
-                        <Space>
+                        <Space size="small">
                           <Tag color={typeInfo.color}>
                             {typeInfo.icon} {typeInfo.label}
                           </Tag>
@@ -173,7 +173,7 @@ const Marketplace = () => {
                       <h3 className="asset-title">{asset.title}</h3>
 
                       <p className="asset-description">
-                        {asset.description.substring(0, 80)}...
+                        {asset.description.substring(0, 60)}...
                       </p>
 
                       <div className="asset-stats">
@@ -211,7 +211,7 @@ const Marketplace = () => {
                         </div>
                       </div>
 
-                      <Button type="primary" block style={{ marginTop: 16 }}>
+                      <Button type="primary" block size="small" style={{ marginTop: 12 }}>
                         查看详情
                       </Button>
                     </Card>

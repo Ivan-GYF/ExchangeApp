@@ -20,15 +20,19 @@ const Login = () => {
   const [loading, setLoading] = useState(false)
   const [activeTab, setActiveTab] = useState('login')
 
-  // 开发模式：快速登录（三种角色）
-  const handleQuickLogin = (role: UserRole) => {
-    devLogin(role)
-    const roleNames = {
-      [UserRole.INVESTOR]: '投资人（水珠资本）',
+  // 开发模式：快速登录（三种角色 + 额外投资人）
+  const handleQuickLogin = (role: UserRole, userId?: string) => {
+    devLogin(role, userId)
+    
+    const userNames: Record<string, string> = {
+      'investor-inst-001': '投资人（水珠资本）',
+      'investor-inst-004': '投资人（露珠资本）',
       [UserRole.PROJECT_OWNER]: '项目方（华娱传媒）',
-      [UserRole.ADMIN]: '交易所管理员',
+      [UserRole.ADMIN]: '平台管理员',
     }
-    message.success(`开发模式：已以 ${roleNames[role]} 身份登录`)
+    
+    const displayName = userId ? userNames[userId] : userNames[role]
+    message.success(`开发模式：已以 ${displayName} 身份登录`)
     navigate('/')
   }
 
@@ -62,7 +66,7 @@ const Login = () => {
     <div className="login-container">
       <Card className="login-card" bordered={false}>
         <div className="login-header">
-          <h1>Marketplace Exchange Platform</h1>
+          <h1>Lakeside Exchange 湖畔通市场</h1>
           <p>投资资产交易平台</p>
         </div>
 
@@ -216,13 +220,26 @@ const Login = () => {
             block
             size="large"
             icon={<BankOutlined />}
-            onClick={() => handleQuickLogin(UserRole.INVESTOR)}
+            onClick={() => handleQuickLogin(UserRole.INVESTOR, 'investor-inst-001')}
             style={{
               borderColor: '#1890ff',
               color: '#1890ff',
             }}
           >
             投资人登录（水珠资本）
+          </Button>
+          
+          <Button
+            block
+            size="large"
+            icon={<BankOutlined />}
+            onClick={() => handleQuickLogin(UserRole.INVESTOR, 'investor-inst-004')}
+            style={{
+              borderColor: '#13c2c2',
+              color: '#13c2c2',
+            }}
+          >
+            投资人登录（露珠资本）
           </Button>
           
           <Button
@@ -248,7 +265,7 @@ const Login = () => {
               color: '#faad14',
             }}
           >
-            管理员登录（MIFC平台）
+            管理员登录（湖畔通平台）
           </Button>
         </Space>
       </Card>

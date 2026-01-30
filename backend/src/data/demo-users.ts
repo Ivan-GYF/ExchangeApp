@@ -54,6 +54,23 @@ export const demoUsers = [
     updatedAt: '2026-01-20T00:00:00.000Z',
   },
   {
+    id: 'investor-inst-004',
+    email: 'luzhu@capital.com',
+    password: 'demo123',
+    name: '露珠资本有限合伙',
+    role: 'INVESTOR',
+    phone: '010-59886677',
+    organizationType: 'INSTITUTION',
+    institution: {
+      name: '露珠资本有限合伙',
+      type: '私募股权基金',
+      registrationNumber: '私募基金管理人登记证明函号：P8765432',
+      aum: 8000000000, // 80亿资产管理规模
+    },
+    createdAt: '2024-06-10T00:00:00.000Z',
+    updatedAt: '2026-01-30T00:00:00.000Z',
+  },
+  {
     id: 'investor-individual-001',
     email: 'zhangmingyuan@wealth.com',
     password: 'demo123',
@@ -110,16 +127,16 @@ export const demoUsers = [
   // ========== 交易所管理员（1个）==========
   {
     id: 'admin-001',
-    email: 'admin@mifc.com',
+    email: 'admin@lakeside.com',
     password: 'admin123',
-    name: 'MIFC 平台管理员',
+    name: '湖畔通平台管理员',
     role: 'ADMIN',
     phone: '400-888-6666',
     organizationType: 'INSTITUTION',
     institution: {
-      name: 'MIFC 微连接投资平台',
+      name: 'Lakeside Exchange 湖畔通市场',
       type: '金融科技平台',
-      registrationNumber: '统一社会信用代码：91310000MA1FMIFC01',
+      registrationNumber: '统一社会信用代码：91310000MA1FLAKE01',
     },
     createdAt: '2023-01-01T00:00:00.000Z',
     updatedAt: '2026-01-20T00:00:00.000Z',

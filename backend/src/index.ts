@@ -27,7 +27,7 @@ app.get('/health', (_req, res) => {
 // API路由
 app.get('/api', (_req, res) => {
   res.json({
-    message: 'Marketplace Exchange Platform API',
+    message: 'Lakeside Exchange 湖畔通市场 API',
     version: '1.0.0',
     endpoints: {
       auth: '/api/auth',

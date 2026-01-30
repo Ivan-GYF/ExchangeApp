@@ -1,9 +1,10 @@
 import { useEffect, useState } from 'react'
-import { Card, Row, Col, Table, Tag, Statistic, Spin, Empty } from 'antd'
-import { RiseOutlined, FallOutlined } from '@ant-design/icons'
+import { Card, Row, Col, Table, Tag, Statistic, Spin, Empty, Select, Space, Alert } from 'antd'
+import { RiseOutlined, FallOutlined, UserOutlined } from '@ant-design/icons'
 import ReactECharts from 'echarts-for-react'
 import { apiClient } from '@/services/api'
-import { Investment, Milestone } from '@/types'
+import { Investment, Milestone, UserRole } from '@/types'
+import { useAuthStore } from '@/stores/authStore'
 import './Portfolio.css'
 
 const assetTypeLabels: Record<string, { label: string; color: string; icon: string }> = {
@@ -19,20 +20,48 @@ interface PortfolioStats {
   upcomingMilestones: Milestone[]
 }
 
+// 投资人列表（管理员可选择）
+const investorsList = [
+  { id: 'investor-inst-001', name: '水珠资本管理有限公司' },
+  { id: 'investor-inst-004', name: '露珠资本有限合伙' },
+  { id: 'investor-inst-002', name: '水流资产管理有限公司' },
+  { id: 'investor-inst-003', name: '水滴信托有限责任公司' },
+  { id: 'investor-individual-001', name: '张明远（个人投资者）' },
+]
+
 const Portfolio = () => {
+  const { user } = useAuthStore()
   const [stats, setStats] = useState<PortfolioStats | null>(null)
   const [investments, setInvestments] = useState<Investment[]>([])
   const [loading, setLoading] = useState(true)
+  const [selectedUserId, setSelectedUserId] = useState<string | undefined>(undefined)
+
+  // 判断是否为管理员
+  const isAdmin = user?.role === UserRole.ADMIN
+  
+  // 确定当前查看的用户ID
+  const currentUserId = isAdmin ? selectedUserId : user?.id
 
   useEffect(() => {
+    // 管理员需要先选择投资人
+    if (isAdmin && !selectedUserId) {
+      setLoading(false)
+      return
+    }
+    
     fetchPortfolioData()
-  }, [])
+  }, [selectedUserId, user])
 
   const fetchPortfolioData = async () => {
+    if (!currentUserId && !isAdmin) return
+    
     try {
+      setLoading(true)
+      const params = currentUserId ? { userId: currentUserId } : {}
+      
       const [statsData, investmentsData] = await Promise.all([
-        apiClient.get<PortfolioStats>('/investments/portfolio/stats'),
-        apiClient.get<{ investments: Investment[] }>('/investments/my'),
+        apiClient.get<PortfolioStats>('/investments/portfolio/stats', { params }),
+        apiClient.get<{ investments: Investment[] }>('/investments/my', { params }),
       ])
 
       setStats(statsData)
@@ -42,6 +71,10 @@ const Portfolio = () => {
     } finally {
       setLoading(false)
     }
+  }
+
+  const handleInvestorChange = (userId: string) => {
+    setSelectedUserId(userId)
   }
 
   const formatCurrency = (amount: number) => {
@@ -170,18 +203,102 @@ const Portfolio = () => {
     )
   }
 
-  if (!stats || !investments || investments.length === 0) {
+  // 管理员未选择投资人时显示提示
+  if (isAdmin && !selectedUserId) {
     return (
       <div className="portfolio-container">
         <h1 className="page-title">投资组合管理</h1>
-        <Empty description="您还没有任何投资记录" />
+        <Card>
+          <Space direction="vertical" size="large" style={{ width: '100%' }}>
+            <Alert
+              message="请选择要查看的投资人账户"
+              description="作为管理员，您可以查看任何投资人的投资组合。请从下方选择一个投资人账户。"
+              type="info"
+              showIcon
+              icon={<UserOutlined />}
+            />
+            <div>
+              <label style={{ marginRight: 12, fontWeight: 600 }}>选择投资人：</label>
+              <Select
+                placeholder="请选择投资人账户"
+                style={{ width: 400 }}
+                size="large"
+                onChange={handleInvestorChange}
+                options={investorsList.map(inv => ({
+                  label: inv.name,
+                  value: inv.id,
+                }))}
+              />
+            </div>
+          </Space>
+        </Card>
       </div>
     )
   }
 
+  if (!stats || !investments || investments.length === 0) {
+    return (
+      <div className="portfolio-container">
+        <h1 className="page-title">投资组合管理</h1>
+        {isAdmin && (
+          <Card style={{ marginBottom: 16 }}>
+            <Space>
+              <label style={{ fontWeight: 600 }}>当前查看投资人：</label>
+              <Select
+                value={selectedUserId}
+                style={{ width: 300 }}
+                onChange={handleInvestorChange}
+                options={investorsList.map(inv => ({
+                  label: inv.name,
+                  value: inv.id,
+                }))}
+              />
+            </Space>
+          </Card>
+        )}
+        <Empty description="该投资人还没有任何投资记录" />
+      </div>
+    )
+  }
+
+  const selectedInvestorName = isAdmin 
+    ? investorsList.find(inv => inv.id === selectedUserId)?.name 
+    : user?.name
+
   return (
     <div className="portfolio-container">
       <h1 className="page-title">投资组合管理</h1>
+
+      {/* 管理员：投资人选择器 */}
+      {isAdmin && (
+        <Card style={{ marginBottom: 16 }}>
+          <Space>
+            <UserOutlined style={{ fontSize: 16 }} />
+            <label style={{ fontWeight: 600 }}>当前查看投资人：</label>
+            <Select
+              value={selectedUserId}
+              style={{ width: 300 }}
+              onChange={handleInvestorChange}
+              options={investorsList.map(inv => ({
+                label: inv.name,
+                value: inv.id,
+              }))}
+            />
+            <Tag color="gold">管理员模式</Tag>
+          </Space>
+        </Card>
+      )}
+
+      {/* 非管理员：显示当前用户名 */}
+      {!isAdmin && (
+        <Card style={{ marginBottom: 16, background: '#f0f5ff' }}>
+          <Space>
+            <UserOutlined style={{ fontSize: 16, color: '#1890ff' }} />
+            <span style={{ fontWeight: 600 }}>投资人：</span>
+            <span style={{ fontSize: 16, color: '#1890ff' }}>{selectedInvestorName}</span>
+          </Space>
+        </Card>
+      )}
 
       {/* KPI 统计 */}
       <Row gutter={[16, 16]} style={{ marginBottom: 24 }}>
@@ -226,10 +343,17 @@ const Portfolio = () => {
                 {stats.upcomingMilestones.map((milestone: any) => (
                   <div key={milestone.id} className="milestone-item">
                     <div className="milestone-date">
-                      {new Date(milestone.dueDate).toLocaleDateString()}
+                      {new Date(milestone.dueDate).toLocaleDateString('zh-CN')}
                     </div>
                     <div className="milestone-content">
-                      <div className="milestone-title">{milestone.title}</div>
+                      <div className="milestone-title">
+                        {milestone.title}
+                        {milestone.expectedAmount && (
+                          <span style={{ color: '#52c41a', marginLeft: 8, fontWeight: 600 }}>
+                            ¥{(milestone.expectedAmount / 10000).toFixed(2)}万
+                          </span>
+                        )}
+                      </div>
                       <div className="milestone-asset">{milestone.asset?.title || milestone.description || ''}</div>
                     </div>
                   </div>

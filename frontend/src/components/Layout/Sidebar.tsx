@@ -11,6 +11,7 @@ import {
 import type { MenuProps } from 'antd'
 import { useAuthStore } from '@/stores/authStore'
 import { UserRole } from '@/types'
+import './Sidebar.css'
 
 const { Sider } = Layout
 
@@ -92,37 +93,33 @@ const Sidebar = () => {
   }
 
   return (
-    <Sider
-      breakpoint="lg"
-      collapsedWidth="0"
-      style={{
-        overflow: 'auto',
-        height: '100vh',
-        position: 'sticky',
-        left: 0,
-        top: 0,
-        bottom: 0,
-      }}
-    >
-      <div style={{
-        height: '64px',
-        display: 'flex',
-        alignItems: 'center',
-        justifyContent: 'center',
-        color: '#fff',
-        fontSize: '20px',
-        fontWeight: 'bold',
-      }}>
-        MEP
-      </div>
-      <Menu
-        theme="dark"
-        mode="inline"
-        selectedKeys={[location.pathname]}
-        items={items}
-        onClick={handleMenuClick}
-      />
-    </Sider>
+    <div className="sidebar-container">
+      <Sider
+        breakpoint="lg"
+        collapsedWidth="0"
+        style={{
+          overflow: 'auto',
+          height: '100vh',
+          position: 'sticky',
+          left: 0,
+          top: 0,
+          bottom: 0,
+        }}
+      >
+        <div className="sidebar-logo">
+          <span>湖畔通市场</span>
+          <span className="sidebar-logo-subtitle">(LSE)</span>
+        </div>
+        <Menu
+          theme="dark"
+          mode="inline"
+          selectedKeys={[location.pathname]}
+          items={items}
+          onClick={handleMenuClick}
+          className="sidebar-menu"
+        />
+      </Sider>
+    </div>
   )
 }
 

@@ -1,9 +1,10 @@
 import { Router } from 'express'
-import { allAssets, recentActivities } from '../data/seed-data'
+import { recentActivities } from '../data/seed-data'
+import { getRuntimeAssets } from './assets'
 
 const router = Router()
 
-// ????????
+// 转换资产数据格式
 const transformAsset = (asset: any) => ({
   ...asset,
   expectedReturnMin: asset.expectedReturn.min,
@@ -11,22 +12,31 @@ const transformAsset = (asset: any) => ({
   expectedReturnType: asset.expectedReturn.type,
 })
 
-// ??????
+// 获取概览数据
 router.get('/overview', (req, res) => {
-  // ??????????????
-  const totalAssets = allAssets.reduce((sum, a) => sum + a.raisedAmount, 0) / 10000
+  // 使用运行时动态资产数组（包含预设 + 审批通过的项目）
+  const runtimeAssets = getRuntimeAssets()
   
-  // ??????
+  // 统一为"目标金额总和"（方案A）
+  const totalAssets = runtimeAssets.reduce((sum, a) => sum + a.targetAmount, 0) / 10000
+  
+  // 新增：已募集金额总和
+  const raisedAssets = runtimeAssets.reduce((sum, a) => sum + a.raisedAmount, 0) / 10000
+  
+  // 新增：募资进度百分比
+  const fundingProgress = totalAssets > 0 ? Math.round((raisedAssets / totalAssets) * 100 * 100) / 100 : 0
+  
+  // 资产管道状态
   const pipeline = {
-    pending: allAssets.filter(a => a.status === 'PENDING').length,
-    underReview: allAssets.filter(a => a.status === 'UNDER_REVIEW').length,
-    listed: allAssets.filter(a => a.status === 'LISTED' || a.status === 'FUNDING').length,
-    funding: allAssets.filter(a => a.status === 'FUNDING').length,
-    completed: allAssets.filter(a => a.status === 'FUNDED').length,
+    pending: runtimeAssets.filter(a => a.status === 'PENDING').length,
+    underReview: runtimeAssets.filter(a => a.status === 'UNDER_REVIEW').length,
+    listed: runtimeAssets.filter(a => a.status === 'LISTED' || a.status === 'FUNDING').length,
+    funding: runtimeAssets.filter(a => a.status === 'FUNDING').length,
+    completed: runtimeAssets.filter(a => a.status === 'FUNDED').length,
   }
   
-  // ??????????
-  const typeCounts = allAssets.reduce((acc, asset) => {
+  // 资产类型分布（百分比）
+  const typeCounts = runtimeAssets.reduce((acc, asset) => {
     acc[asset.type] = (acc[asset.type] || 0) + 1
     return acc
   }, {} as Record<string, number>)
@@ -40,8 +50,10 @@ router.get('/overview', (req, res) => {
   res.json({
     success: true,
     data: {
-      totalAssets,
-      assetPipeline: allAssets.length,
+      totalAssets,           // 目标金额总和（万）
+      raisedAssets,          // 已募集金额总和（万）
+      fundingProgress,       // 募资进度百分比
+      assetPipeline: runtimeAssets.length,
       pendingApproval: pipeline.pending,
       systemHealth: 98.5,
       pipeline,
@@ -50,10 +62,11 @@ router.get('/overview', (req, res) => {
   })
 })
 
-// ?????????? /pending?
+  // ?????????? /pending?
 router.get('/pending', (req, res) => {
-  // ????????"???"??????
-  const assets = allAssets.map(transformAsset)
+  // 使用运行时动态资产数组
+  const runtimeAssets = getRuntimeAssets()
+  const assets = runtimeAssets.map(transformAsset)
   
   res.json({
     success: true,

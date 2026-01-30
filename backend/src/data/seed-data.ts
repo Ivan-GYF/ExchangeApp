@@ -4,7 +4,7 @@
 export const mifcFundAssets = [
   {
     id: 'mifc-fund-lp-001',
-    title: 'MIFC主基金LP份额 2024-Q1期',
+    title: 'MIFC主基金LP份额',
     description: `MIFC主基金劣后级LP份额，总规模5亿元人民币，本份额为劣后级4亿元。主基金投资于各类优质收入分成项目，包括文化娱乐、体育赛事、校园设施等多元化资产。
     
 【基金结构】
@@ -60,7 +60,7 @@ export const mifcFundAssets = [
   },
   {
     id: 'mifc-abs-001',
-    title: 'MIFC主基金ABS优先级份额 2024-A1',
+    title: 'MIFC主基金ABS优先级份额',
     description: `MIFC主基金资产支持证券优先级份额，享有5亿元资产组合的优先受偿权，4亿元劣后级份额提供80%的安全垫。
     
 【产品特点】
@@ -128,38 +128,141 @@ export const seedAssets = [
   // 演唱会类
   {
     id: 'asset-001',
-    title: '张学友2026巡回演唱会收益权（跟投）',
-    description: `【跟投机会】本项目为MIFC主基金投资溢出份额。项目总需求1500万，主基金投资1000万（单项目限额），溢出500万开放跟投。
+    title: 'Cardi B中国巡回演唱会收益权（跟投）',
+    description: `【跟投机会】本项目为MIFC主基金投资溢出份额。项目总需求2000万，主基金投资1500万，溢出500万开放跟投。
 
-张学友"60+巡回演唱会"世界巡回演唱会中国站门票销售及周边商品收益权，预计观众超40万人次。跟投投资人与主基金享有同等权益。`,
+Cardi B 2026中国巡回演唱会门票销售、周边商品及赞助收益权。覆盖北京、上海、广州、深圳、成都5城，场馆容量超15万人次。作为格莱美获奖说唱女王，Cardi B首次中国巡演备受期待，目标人群为18-35岁潮流音乐爱好者。跟投投资人与主基金享有同等权益。`,
     type: 'CO_INVESTMENT',
     originalCategory: 'CONCERT_TICKET',
     targetAmount: 5000000,
-    raisedAmount: 3500000,
-    minInvestment: 500000,
-    maxInvestment: 5000000,
-    expectedReturn: { min: 18, max: 28, type: '项目收益' },
-    revenueStructure: { '门票销售': 75, '周边商品': 15, '赞助收入': 10 },
+    raisedAmount: 2000000,
+    minInvestment: 300000,
+    maxInvestment: 2000000,
+    expectedReturn: { min: 22, max: 35, type: '项目收益' },
+    revenueStructure: { '门票销售': 68, '周边商品': 18, '赞助收入': 14 },
     riskLevel: 'MEDIUM',
-    riskScore: 55,
+    riskScore: 58,
     region: '全国',
     city: '北京',
     status: 'FUNDING',
-    fundingDeadline: '2026-02-01',
-    investmentPeriod: 8,
+    fundingDeadline: '2026-03-15',
+    investmentPeriod: 10,
     dueDiligence: { '财务审计': true, '法律合规': true, '运营评估': true, '市场分析': true },
     overflowFrom: {
       fundId: 'mifc-fund-lp-001',
-      fundName: 'MIFC主基金LP份额 2024-Q1期',
-      projectInvestLimit: 10000000,
-      projectTotalNeed: 15000000,
+      fundName: 'MIFC主基金LP份额',
+      projectInvestLimit: 15000000,
+      projectTotalNeed: 20000000,
       overflowAmount: 5000000,
     },
     createdAt: '2025-12-20T00:00:00.000Z',
-    updatedAt: '2026-01-26T00:00:00.000Z',
+    updatedAt: '2026-01-30T00:00:00.000Z',
   },
+  // 校园设施类
   {
     id: 'asset-002',
+    title: '天猫校园自助服务设施项目（跟投）',
+    description: `【跟投机会】项目总需求1800万，主基金投资1000万，溢出800万开放跟投。
+
+成都、重庆20所高校的自助洗衣、打印、智能快递柜等校园服务设施运营收益权。`,
+    type: 'CO_INVESTMENT',
+    originalCategory: 'CAMPUS_FACILITY',
+    targetAmount: 8000000,
+    raisedAmount: 3000000,
+    minInvestment: 100000,
+    maxInvestment: 1800000,
+    expectedReturn: { min: 7, max: 11, type: '年化收益' },
+    revenueStructure: { '服务收入': 55, '设备租赁': 30, '广告收入': 15 },
+    riskLevel: 'LOW',
+    riskScore: 25,
+    region: '西南',
+    city: '成都',
+    status: 'FUNDING',
+    fundingDeadline: '2026-05-01',
+    investmentPeriod: 36,
+    dueDiligence: { '财务审计': true, '法律合规': true, '运营评估': true, '市场分析': false },
+    overflowFrom: {
+      fundId: 'mifc-fund-lp-001',
+      fundName: 'MIFC主基金LP份额',
+      projectInvestLimit: 10000000,
+      projectTotalNeed: 18000000,
+      overflowAmount: 8000000,
+    },
+    createdAt: '2026-01-08T00:00:00.000Z',
+    updatedAt: '2026-01-26T00:00:00.000Z',
+  },
+  
+  // 供应链金融类
+  {
+    id: 'asset-003',
+    title: '香港建筑分包商融资项目（跟投）',
+    description: `【跟投机会】项目总需求1.2亿，主基金投资1000万，溢出3000万开放跟投。
+
+基于MTR港铁、香港政府、香港房协、中电、港灯等优质雇主企业的工程项目，向香港二级工程分包商，通过保理融资（Factoring）及发票抵押融资（Invoice Financing）方式提供资金。雇主企业信用优质，回款有保障。`,
+    type: 'CO_INVESTMENT',
+    originalCategory: 'SUPPLY_CHAIN_FINANCE',
+    targetAmount: 30000000,
+    raisedAmount: 18000000,
+    minInvestment: 1000000,
+    maxInvestment: 5000000,
+    expectedReturn: { min: 13, max: 15, type: '年化收益' },
+    revenueStructure: { '保理利息': 65, '发票融资利息': 30, '服务费': 5 },
+    riskLevel: 'MEDIUM',
+    riskScore: 42,
+    region: '香港',
+    city: '香港',
+    status: 'FUNDING',
+    fundingDeadline: '2026-04-30',
+    investmentPeriod: 18,
+    dueDiligence: { '财务审计': true, '法律合规': true, '运营评估': true, '市场分析': true },
+    overflowFrom: {
+      fundId: 'mifc-fund-lp-001',
+      fundName: 'MIFC主基金LP份额',
+      projectInvestLimit: 10000000,
+      projectTotalNeed: 120000000,
+      overflowAmount: 30000000,
+    },
+    createdAt: '2026-01-15T00:00:00.000Z',
+    updatedAt: '2026-01-30T00:00:00.000Z',
+  },
+  
+  // 电商投流类
+  {
+    id: 'asset-004',
+    title: '良辰美电商投流项目（跟投）',
+    description: `【跟投机会】项目总需求1.5亿，主基金投资1000万，溢出5000万开放跟投。
+
+通过良辰美等抖音国代，向有抖音投流需求的电商客户提供资金，并根据投流产生的产品销售收入取得收入分成。合作品牌涵盖美妆、服饰、数码等高GMV品类。`,
+    type: 'CO_INVESTMENT',
+    originalCategory: 'STREAMING',
+    targetAmount: 50000000,
+    raisedAmount: 28000000,
+    minInvestment: 500000,
+    maxInvestment: 5000000,
+    expectedReturn: { min: 20, max: 32, type: '年化收益' },
+    revenueStructure: { '投流ROI分成': 70, '销售佣金': 20, '服务费': 10 },
+    riskLevel: 'HIGH',
+    riskScore: 65,
+    region: '全国',
+    city: '杭州',
+    status: 'FUNDING',
+    fundingDeadline: '2026-03-31',
+    investmentPeriod: 12,
+    dueDiligence: { '财务审计': true, '法律合规': true, '运营评估': true, '市场分析': true },
+    overflowFrom: {
+      fundId: 'mifc-fund-lp-001',
+      fundName: 'MIFC主基金LP份额',
+      projectInvestLimit: 10000000,
+      projectTotalNeed: 150000000,
+      overflowAmount: 50000000,
+    },
+    createdAt: '2026-01-12T00:00:00.000Z',
+    updatedAt: '2026-01-30T00:00:00.000Z',
+  },
+  
+  // 演唱会类
+  {
+    id: 'asset-005',
     title: 'TFBOYS十周年演唱会收益权（跟投）',
     description: `【跟投机会】项目总需求2150万，主基金投资1000万，溢出1150万开放跟投。
 
@@ -182,7 +285,7 @@ TFBOYS成团十周年纪念演唱会全国巡演收益权，覆盖10城15场，�
     dueDiligence: { '财务审计': true, '法律合规': true, '运营评估': true, '市场分析': true },
     overflowFrom: {
       fundId: 'mifc-fund-lp-001',
-      fundName: 'MIFC主基金LP份额 2024-Q1期',
+      fundName: 'MIFC主基金LP份额',
       projectInvestLimit: 10000000,
       projectTotalNeed: 21500000,
       overflowAmount: 11500000,
@@ -193,7 +296,7 @@ TFBOYS成团十周年纪念演唱会全国巡演收益权，覆盖10城15场，�
 
   // 赛车场类
   {
-    id: 'asset-003',
+    id: 'asset-006',
     title: '上海F1赛车场赛事收益权（跟投）',
     description: `【跟投机会】项目总需求3250万，主基金投资1000万，溢出2250万开放跟投。
 
@@ -216,7 +319,7 @@ TFBOYS成团十周年纪念演唱会全国巡演收益权，覆盖10城15场，�
     dueDiligence: { '财务审计': true, '法律合规': true, '运营评估': true, '市场分析': true },
     overflowFrom: {
       fundId: 'mifc-fund-lp-001',
-      fundName: 'MIFC主基金LP份额 2024-Q1期',
+      fundName: 'MIFC主基金LP份额',
       projectInvestLimit: 10000000,
       projectTotalNeed: 32500000,
       overflowAmount: 22500000,
@@ -224,8 +327,10 @@ TFBOYS成团十周年纪念演唱会全国巡演收益权，覆盖10城15场，�
     createdAt: '2026-01-01T00:00:00.000Z',
     updatedAt: '2026-01-26T00:00:00.000Z',
   },
+
+  // 赛车场类  
   {
-    id: 'asset-004',
+    id: 'asset-007',
     title: '珠海赛车场GT赛事运营权（跟投）',
     description: `【跟投机会】项目总需求1800万，主基金投资1000万，溢出800万开放跟投。
 
@@ -248,7 +353,7 @@ TFBOYS成团十周年纪念演唱会全国巡演收益权，覆盖10城15场，�
     dueDiligence: { '财务审计': true, '法律合规': true, '运营评估': true, '市场分析': false },
     overflowFrom: {
       fundId: 'mifc-fund-lp-001',
-      fundName: 'MIFC主基金LP份额 2024-Q1期',
+      fundName: 'MIFC主基金LP份额',
       projectInvestLimit: 10000000,
       projectTotalNeed: 18000000,
       overflowAmount: 8000000,
@@ -259,7 +364,7 @@ TFBOYS成团十周年纪念演唱会全国巡演收益权，覆盖10城15场，�
 
   // 新媒体流量类
   {
-    id: 'asset-005',
+    id: 'asset-008',
     title: '头部美妆KOL矩阵投流收益权（跟投）',
     description: `【跟投机会】项目总需求2000万，主基金投资1000万，溢出1000万开放跟投。
 
@@ -282,7 +387,7 @@ TFBOYS成团十周年纪念演唱会全国巡演收益权，覆盖10城15场，�
     dueDiligence: { '财务审计': true, '法律合规': true, '运营评估': true, '市场分析': true },
     overflowFrom: {
       fundId: 'mifc-fund-lp-001',
-      fundName: 'MIFC主基金LP份额 2024-Q1期',
+      fundName: 'MIFC主基金LP份额',
       projectInvestLimit: 10000000,
       projectTotalNeed: 20000000,
       overflowAmount: 10000000,
@@ -291,7 +396,7 @@ TFBOYS成团十周年纪念演唱会全国巡演收益权，覆盖10城15场，�
     updatedAt: '2026-01-26T00:00:00.000Z',
   },
   {
-    id: 'asset-006',
+    id: 'asset-009',
     title: '3C数码垂类达人投流项目（跟投）',
     description: `【跟投机会】项目总需求1500万，主基金投资1000万，溢出500万开放跟投。
 
@@ -314,7 +419,7 @@ TFBOYS成团十周年纪念演唱会全国巡演收益权，覆盖10城15场，�
     dueDiligence: { '财务审计': true, '法律合规': true, '运营评估': false, '市场分析': true },
     overflowFrom: {
       fundId: 'mifc-fund-lp-001',
-      fundName: 'MIFC主基金LP份额 2024-Q1期',
+      fundName: 'MIFC主基金LP份额',
       projectInvestLimit: 10000000,
       projectTotalNeed: 15000000,
       overflowAmount: 5000000,
@@ -325,7 +430,7 @@ TFBOYS成团十周年纪念演唱会全国巡演收益权，覆盖10城15场，�
 
   // 校园设施类
   {
-    id: 'asset-007',
+    id: 'asset-010',
     title: '华东高校智慧零售项目（跟投）',
     description: `【跟投机会】项目总需求2500万，主基金投资1000万，溢出1500万开放跟投。
 
@@ -348,44 +453,12 @@ TFBOYS成团十周年纪念演唱会全国巡演收益权，覆盖10城15场，�
     dueDiligence: { '财务审计': true, '法律合规': true, '运营评估': true, '市场分析': true },
     overflowFrom: {
       fundId: 'mifc-fund-lp-001',
-      fundName: 'MIFC主基金LP份额 2024-Q1期',
+      fundName: 'MIFC主基金LP份额',
       projectInvestLimit: 10000000,
       projectTotalNeed: 25000000,
       overflowAmount: 15000000,
     },
     createdAt: '2025-11-15T00:00:00.000Z',
-    updatedAt: '2026-01-26T00:00:00.000Z',
-  },
-  {
-    id: 'asset-008',
-    title: '西南高校自助服务设施项目（跟投）',
-    description: `【跟投机会】项目总需求1800万，主基金投资1000万，溢出800万开放跟投。
-
-成都、重庆20所高校的自助洗衣、打印、智能快递柜等校园服务设施运营收益权。`,
-    type: 'CO_INVESTMENT',
-    originalCategory: 'CAMPUS_FACILITY',
-    targetAmount: 8000000,
-    raisedAmount: 3000000,
-    minInvestment: 100000,
-    maxInvestment: 1800000,
-    expectedReturn: { min: 7, max: 11, type: '年化收益' },
-    revenueStructure: { '服务收入': 55, '设备租赁': 30, '广告收入': 15 },
-    riskLevel: 'LOW',
-    riskScore: 25,
-    region: '西南',
-    city: '成都',
-    status: 'FUNDING',
-    fundingDeadline: '2026-05-01',
-    investmentPeriod: 36,
-    dueDiligence: { '财务审计': true, '法律合规': true, '运营评估': true, '市场分析': false },
-    overflowFrom: {
-      fundId: 'mifc-fund-lp-001',
-      fundName: 'MIFC主基金LP份额 2024-Q1期',
-      projectInvestLimit: 10000000,
-      projectTotalNeed: 18000000,
-      overflowAmount: 8000000,
-    },
-    createdAt: '2026-01-08T00:00:00.000Z',
     updatedAt: '2026-01-26T00:00:00.000Z',
   },
 ]
@@ -396,9 +469,13 @@ export const allAssets = [...mifcFundAssets, ...seedAssets]
 // Dashboard 统计数据
 export const dashboardStats = {
   totalInvestment: 283000000,
-  activeOpportunities: 10,  // 2个母基金 + 8个跟投
+  activeOpportunities: 12,  // 2个母基金 + 10个跟投
   matchedTransactions: 156,
   portfolioReturn: 15.8,
+  assetGrowth: 12.5,
+  investorGrowth: 8.3,
+  projectGrowth: 15.2,
+  successRateChange: 2.1,
 }
 
 // 趋势数据
@@ -431,21 +508,21 @@ export const trendData = {
 
 // 中央厨房概览数据
 export const centralKitchenData = {
-  totalAssets: 10,
-  assetPipeline: 12,
+  totalAssets: 12,
+  assetPipeline: 14,
   pendingApproval: 2,
   systemHealth: 98,
   pipeline: {
     acquisition: 3,
     dueDiligence: 2,
     pricing: 1,
-    listed: 10,
-    matched: 8,
+    listed: 12,
+    matched: 10,
   },
   distribution: {
     MIFC_FUND_LP: 1,
     MIFC_ABS: 1,
-    CO_INVESTMENT: 8,
+    CO_INVESTMENT: 10,
   },
 }
 
@@ -454,7 +531,7 @@ export const recentActivities = [
   {
     id: 'act-001',
     type: 'INVESTMENT_MADE',
-    description: '水珠资本投资了"MIFC主基金LP份额 2024-Q1期" ¥20,000,000',
+    description: '水珠资本投资了"MIFC主基金LP份额" ¥20,000,000',
     createdAt: '2026-01-25T06:30:00.000Z',
   },
   {
@@ -544,5 +621,50 @@ export const seedInvestments = [
     pNoteNumber: 'PN-COINV001',
     createdAt: '2026-01-05T16:45:00.000Z',
     updatedAt: '2026-01-26T00:00:00.000Z',
+  },
+  {
+    id: 'inv-demo-005',
+    userId: 'investor-inst-004', // 露珠资本
+    assetId: 'mifc-fund-lp-001',  // 主基金LP
+    amount: 30000000,  // 3000万投主基金LP
+    managementFee: 600000,
+    transactionFee: 300000,
+    netAmount: 29100000,
+    currentValue: 31800000,
+    returnRate: 6.86,
+    status: 'CONFIRMED',
+    pNoteNumber: 'PN-MIFCLP002',
+    createdAt: '2024-07-20T11:30:00.000Z',
+    updatedAt: '2026-01-30T00:00:00.000Z',
+  },
+  {
+    id: 'inv-demo-006',
+    userId: 'investor-inst-004', // 露珠资本
+    assetId: 'asset-003',  // 上海F1赛车场
+    amount: 5000000,  // 500万
+    managementFee: 100000,
+    transactionFee: 50000,
+    netAmount: 4850000,
+    currentValue: 5350000,
+    returnRate: 7.22,
+    status: 'CONFIRMED',
+    pNoteNumber: 'PN-COINV003',
+    createdAt: '2026-01-10T15:20:00.000Z',
+    updatedAt: '2026-01-30T00:00:00.000Z',
+  },
+  {
+    id: 'inv-demo-007',
+    userId: 'investor-inst-004', // 露珠资本
+    assetId: 'asset-007',  // 华东高校智慧零售
+    amount: 2500000,  // 250万
+    managementFee: 50000,
+    transactionFee: 25000,
+    netAmount: 2425000,
+    currentValue: 2600000,
+    returnRate: 4.12,
+    status: 'CONFIRMED',
+    pNoteNumber: 'PN-COINV007',
+    createdAt: '2025-11-25T10:00:00.000Z',
+    updatedAt: '2026-01-30T00:00:00.000Z',
   },
 ]

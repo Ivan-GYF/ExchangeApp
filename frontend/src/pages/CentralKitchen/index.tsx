@@ -1,6 +1,6 @@
 import { useEffect, useState } from 'react'
 import { Row, Col, Card, Statistic, Table, Tag, Button, Modal, Form, Input, Select, message, Tabs, Timeline, Progress, Space } from 'antd'
-import { CheckCircleOutlined, CloseCircleOutlined, SyncOutlined, PlusOutlined, RollbackOutlined, DownOutlined } from '@ant-design/icons'
+import { CheckCircleOutlined, CloseCircleOutlined, PlusOutlined, RollbackOutlined, DownOutlined } from '@ant-design/icons'
 import { apiClient } from '@/services/api'
 import { Asset } from '@/types'
 import ReactECharts from 'echarts-for-react'
@@ -27,6 +27,8 @@ const statusLabels: Record<string, { label: string; color: string }> = {
 
 interface OverviewData {
   totalAssets: number
+  raisedAssets: number          // 新增：已募集金额
+  fundingProgress: number        // 新增：募资进度百分比
   assetPipeline: number
   pendingApproval: number
   systemHealth: number
@@ -75,14 +77,12 @@ interface ProjectSubmission {
 }
 
 const CentralKitchen = () => {
-  const [form] = Form.useForm()
+  // form removed - no longer used
   const [overview, setOverview] = useState<OverviewData | null>(null)
   const [pendingAssets, setPendingAssets] = useState<Asset[]>([])
   const [pendingProjects, setPendingProjects] = useState<ProjectSubmission[]>([])
   const [activities, setActivities] = useState<Activity[]>([])
   const [loading, setLoading] = useState(true)
-  const [approvalModalVisible, setApprovalModalVisible] = useState(false)
-  const [selectedAsset, setSelectedAsset] = useState<Asset | null>(null)
   const [approvalAction, setApprovalAction] = useState<'APPROVE' | 'REJECT' | 'REQUEST_REVIEW'>('APPROVE')
   const [createModalVisible, setCreateModalVisible] = useState(false)
   const [createForm] = Form.useForm()
@@ -220,34 +220,7 @@ const CentralKitchen = () => {
     })
   }
 
-  const handleApprovalClick = (asset: Asset, action: 'APPROVE' | 'REJECT' | 'REQUEST_REVIEW') => {
-    setSelectedAsset(asset)
-    setApprovalAction(action)
-    setApprovalModalVisible(true)
-  }
-
-  const handleApprovalSubmit = async (values: any) => {
-    if (!selectedAsset) return
-
-    try {
-      await apiClient.post(`/central-kitchen/approve/${selectedAsset.id}`, {
-        action: approvalAction,
-        comment: values.comment,
-      })
-
-      message.success(
-        approvalAction === 'APPROVE' ? '资产已批准' :
-        approvalAction === 'REJECT' ? '资产已拒绝' :
-        '资产已标记为审核中'
-      )
-
-      setApprovalModalVisible(false)
-      form.resetFields()
-      fetchData()
-    } catch (error: any) {
-      message.error(error.response?.data?.error?.message || '操作失败')
-    }
-  }
+  // handleApprovalClick and handleApprovalSubmit functions removed - no longer used
 
   const handleCreateAsset = async (values: any) => {
     try {
@@ -583,7 +556,7 @@ const CentralKitchen = () => {
         <Col xs={24} sm={12} lg={6}>
           <Card>
             <Statistic
-              title="总管理资产"
+              title="目标资产总额"
               value={overview?.totalAssets || 0}
               precision={0}
               valueStyle={{ color: '#3f8600' }}
@@ -595,9 +568,24 @@ const CentralKitchen = () => {
         <Col xs={24} sm={12} lg={6}>
           <Card>
             <Statistic
+              title="已募集金额"
+              value={overview?.raisedAssets || 0}
+              precision={0}
+              valueStyle={{ color: '#1890ff' }}
+              prefix="¥"
+              suffix="万"
+            />
+            <div style={{ marginTop: 8, fontSize: 12, color: '#999' }}>
+              募资进度: {overview?.fundingProgress || 0}%
+            </div>
+          </Card>
+        </Col>
+        <Col xs={24} sm={12} lg={6}>
+          <Card>
+            <Statistic
               title="资产管道"
               value={overview?.assetPipeline || 0}
-              valueStyle={{ color: '#1890ff' }}
+              valueStyle={{ color: '#722ed1' }}
               suffix="个"
             />
           </Card>
@@ -609,17 +597,6 @@ const CentralKitchen = () => {
               value={overview?.pendingApproval || 0}
               valueStyle={{ color: '#faad14' }}
               suffix="个"
-            />
-          </Card>
-        </Col>
-        <Col xs={24} sm={12} lg={6}>
-          <Card>
-            <Statistic
-              title="系统健康度"
-              value={overview?.systemHealth || 0}
-              precision={1}
-              valueStyle={{ color: '#52c41a' }}
-              suffix="%"
             />
           </Card>
         </Col>
@@ -704,35 +681,7 @@ const CentralKitchen = () => {
         </TabPane>
       </Tabs>
 
-      {/* 审批模态框 */}
-      <Modal
-        title={
-          approvalAction === 'APPROVE' ? '批准资产' :
-          approvalAction === 'REJECT' ? '拒绝资产' :
-          '标记为审核中'
-        }
-        open={approvalModalVisible}
-        onCancel={() => {
-          setApprovalModalVisible(false)
-          form.resetFields()
-        }}
-        onOk={() => form.submit()}
-        okText="确认"
-        cancelText="取消"
-      >
-        <Form form={form} layout="vertical" onFinish={handleApprovalSubmit}>
-          <div style={{ marginBottom: 16 }}>
-            <strong>资产名称：</strong>{selectedAsset?.title}
-          </div>
-          <Form.Item
-            label="备注"
-            name="comment"
-            rules={[{ required: true, message: '请输入备注' }]}
-          >
-            <TextArea rows={4} placeholder="请输入审批意见或备注" />
-          </Form.Item>
-        </Form>
-      </Modal>
+      {/* Approval Modal removed - no longer used */}
 
       {/* 创建资产模态框 */}
       <Modal

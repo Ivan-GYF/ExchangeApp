@@ -1,5 +1,5 @@
-import { Modal, Form, Input, Select, InputNumber, Row, Col, message, Upload, Button } from 'antd'
-import { UploadOutlined, PlusOutlined, MinusCircleOutlined } from '@ant-design/icons'
+import { Modal, Form, Input, Select, InputNumber, Row, Col, Button } from 'antd'
+import { PlusOutlined, MinusCircleOutlined } from '@ant-design/icons'
 import { useEffect } from 'react'
 
 const { TextArea } = Input
@@ -240,7 +240,7 @@ const ProjectForm = ({ visible, mode, initialValues, onSubmit, onCancel }: Proje
           <Form.List name="revenueStructure">
             {(fields, { add, remove }) => (
               <>
-                {fields.map((field, index) => (
+                {fields.map((field) => (
                   <Row key={field.key} gutter={16} align="middle">
                     <Col span={11}>
                       <Form.Item

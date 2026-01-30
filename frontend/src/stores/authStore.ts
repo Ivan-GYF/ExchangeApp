@@ -12,7 +12,7 @@ interface AuthState {
   register: (data: RegisterRequest) => Promise<void>
   logout: () => void
   fetchCurrentUser: () => Promise<void>
-  devLogin: (role?: UserRole) => void
+  devLogin: (role?: UserRole, userId?: string) => void
 }
 
 export const useAuthStore = create<AuthState>()(
@@ -81,39 +81,58 @@ export const useAuthStore = create<AuthState>()(
       },
 
       // 开发模式：快速登录（支持三种角色）
-      devLogin: (role: UserRole = UserRole.ADMIN) => {
+      devLogin: (role: UserRole = UserRole.ADMIN, userId?: string) => {
         const now = new Date().toISOString()
         
-        // 根据角色生成不同的用户信息
-        const userProfiles = {
-          [UserRole.INVESTOR]: {
+        // 根据角色和userId生成不同的用户信息
+        const userProfiles: Record<string, any> = {
+          'investor-inst-001': {
             id: 'investor-inst-001',
             name: '水珠资本管理有限公司',
             email: 'shuizhu@capital.com',
             phone: '021-68886666',
+            role: UserRole.INVESTOR,
+          },
+          'investor-inst-004': {
+            id: 'investor-inst-004',
+            name: '露珠资本有限合伙',
+            email: 'luzhu@capital.com',
+            phone: '010-59886677',
+            role: UserRole.INVESTOR,
           },
           [UserRole.PROJECT_OWNER]: {
             id: 'project-owner-001',
             name: '华娱文化传媒集团',
             email: 'concert@operator.com',
             phone: '010-84568888',
+            role: UserRole.PROJECT_OWNER,
           },
           [UserRole.ADMIN]: {
             id: 'admin-001',
-            name: 'MIFC 平台管理员',
-            email: 'admin@mifc.com',
+            name: '湖畔通平台管理员',
+            email: 'admin@lakeside.com',
             phone: '400-888-6666',
+            role: UserRole.ADMIN,
           },
         }
         
-        const profile = userProfiles[role]
+        // 如果指定了userId，使用该用户；否则根据role获取默认用户
+        let profile
+        if (userId) {
+          profile = userProfiles[userId]
+        } else {
+          // 默认投资人是水珠资本
+          profile = role === UserRole.INVESTOR 
+            ? userProfiles['investor-inst-001']
+            : userProfiles[role]
+        }
+        
         const devUser: User = {
           ...profile,
-          role,
           createdAt: now,
           updatedAt: now,
         }
-        const devToken = `dev-token-${role}-${Date.now()}`
+        const devToken = `dev-token-${profile.id}-${Date.now()}`
         
         localStorage.setItem('token', devToken)
         set({
